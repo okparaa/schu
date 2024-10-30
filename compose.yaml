@@ -1,0 +1,58 @@
+services:
+  db:
+    container_name: db
+    image: postgres:16.4-alpine
+    restart: always
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    env_file:
+      - ./.env
+    networks:
+      - appnet
+    healthcheck:
+      test: pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    container_name: app
+    restart: always
+    build:
+      context: .
+      dockerfile: app.dockerfile
+    image: app:v1
+    ports:
+      - 3000:3000
+    env_file:
+      - ./.env
+    networks:
+      - appnet
+    volumes:
+      - ./src:/app/src
+      - ./public:/app/public
+    depends_on:
+      db:
+        condition: service_healthy
+    develop:
+      watch:
+        - action: sync
+          path: ./src
+          target: /app/src
+          ignore:
+            - node_modules/
+        - action: sync
+          path: ./public
+          target: /app/public
+          ignore:
+            - node_modules/
+        - action: rebuild
+          path: package.json
+
+networks:
+  appnet:
+    name: appnet
+
+volumes:
+  pgdata:
+    name: pgdata
