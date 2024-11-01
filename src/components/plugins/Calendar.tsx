@@ -2,15 +2,32 @@
 
 import React, { useState } from "react";
 import dayjs from "dayjs";
+import localeData from "dayjs/plugin/localeData";
 
 type CalendarProps = {
   onDateClick?: (date: Date) => void;
 };
 
 const Calendar: React.FC<CalendarProps> = ({ onDateClick }) => {
+  dayjs.extend(localeData);
   const [currentDate, setCurrentDate] = useState(dayjs());
   const [activeDay, setActiveDay] = useState(0);
   const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  const months = dayjs.months();
+  const years = Array.from(
+    { length: 10 },
+    (_, i) => currentDate.year() - 5 + i
+  ); // Shows 10 years (5 before, 5 after current)
+
+  const handleMonthChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newMonth = parseInt(e.target.value, 10);
+    setCurrentDate((prev) => prev.month(newMonth));
+  };
+
+  const handleYearChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newYear = parseInt(e.target.value, 10);
+    setCurrentDate((prev) => prev.year(newYear));
+  };
 
   const handlePrevMonth = () => {
     setCurrentDate((prev) => prev.subtract(1, "month"));
@@ -48,17 +65,40 @@ const Calendar: React.FC<CalendarProps> = ({ onDateClick }) => {
 
   return (
     <div className="w-full max-w-md mx-auto bg-white shadow-md rounded-lg p-4">
-      <div className="flex items-center justify-between mb-2">
+      <div className="flex items-center justify-between mb-3">
         <button
           onClick={handlePrevMonth}
-          className="text-gray-100 hover:text-blue-300 bg-blue-500 rounded-full icon-left-open p-[2px] px-[3px] hover:outline"
+          className="text-gray-100 hover:text-blue-300 bg-blue-500 rounded-full icon-left-open h-8 w-8 hover:outline"
         />
-        <h2 className="text-[16px] font-semibold text-gray-800">
-          {currentDate.format("MMMM YYYY")}
-        </h2>
+
+        <div className="flex p-[1px] rounded-md items-center justify-between gap-1 bg-blue-100">
+          <select
+            value={currentDate.month()}
+            onChange={handleMonthChange}
+            className="px-2 bg-white text-gray-700"
+          >
+            {months.map((month, index) => (
+              <option key={month} value={index}>
+                {month}
+              </option>
+            ))}
+          </select>
+
+          <select
+            value={currentDate.year()}
+            onChange={handleYearChange}
+            className="px-2 bg-white text-gray-700"
+          >
+            {years.map((year) => (
+              <option key={year} value={year}>
+                {year}
+              </option>
+            ))}
+          </select>
+        </div>
         <button
           onClick={handleNextMonth}
-          className="text-gray-100 hover:text-blue-300 bg-blue-500 rounded-full icon-right-open p-[2px] px-[3px] hover:outline"
+          className="text-gray-100 h-8 w-8 hover:text-blue-300 bg-blue-500 rounded-full icon-right-open hover:outline"
         />
       </div>
 

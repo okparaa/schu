@@ -1,4 +1,5 @@
-import { menuItems } from "@/utils/menuUtils";
+import { menuItems, role } from "@/utils/menuUtils";
+import Link from "next/link";
 
 const Menu = () => {
   return (
@@ -7,20 +8,21 @@ const Menu = () => {
         return (
           <div key={`${item.title}.${i}`} className="flex flex-col gap-2">
             <hr />
-            <ul className="m-0 flex flex-col justify-start">
+            <div className="m-0 flex flex-col justify-start">
               {item.items.map((menu, k) => {
-                return (
-                  <li
-                    key={`${menu.label}.${k}`}
-                    className={`${menu.icon} flex justify-center items-center lg:justify-start gap-3 text-lg text-stone-800 py-[6px] lg:py-[4px]`}
-                  >
-                    <span className="hidden lg:block text-base">
-                      {menu.label}
-                    </span>
-                  </li>
-                );
+                if (menu.visible.includes(role) || menu.visible.includes("*")) {
+                  return (
+                    <Link
+                      href={menu.href}
+                      key={`${menu.label}.${k}`}
+                      className={`${menu.icon} text-stone-800 bg-slate-50 hover:bg-slate-200 py-[2px] h-7 items-center mb-[3px] rounded-md flex justify-center lg:justify-start`}
+                    >
+                      <span className="pl-2 hidden lg:block">{menu.label}</span>
+                    </Link>
+                  );
+                }
               })}
-            </ul>
+            </div>
           </div>
         );
       })}
