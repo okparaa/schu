@@ -1,24 +1,84 @@
+"use client";
 import { menuItems, role } from "@/utils/menuUtils";
 import Link from "next/link";
+import { useState } from "react";
 
 const Menu = () => {
+  const [openSub, setOpenSub] = useState<{ [key: string]: boolean }>({});
+
+  const toggleSub = (title: string) => {
+    setOpenSub((prev) => ({ ...prev, [title]: !prev[title] }));
+  };
+
   return (
     <div className="mt-2 text-base">
       {menuItems.map((item, i) => {
         return (
           <div key={`${item.title}.${i}`} className="flex flex-col gap-2">
-            <hr />
+            <hr className="my-2 bg-black" />
             <div className="m-0 flex flex-col justify-start">
               {item.items.map((menu, k) => {
                 if (menu.visible.includes(role) || menu.visible.includes("*")) {
                   return (
-                    <Link
-                      href={menu.href}
-                      key={`${menu.label}.${k}`}
-                      className={`${menu.icon} text-stone-800 bg-slate-50 hover:bg-slate-200 py-[2px] h-7 items-center mb-[3px] rounded-md flex justify-center lg:justify-start`}
-                    >
-                      <span className="pl-2 hidden lg:block">{menu.label}</span>
-                    </Link>
+                    <div key={k}>
+                      {menu.sub ? (
+                        <span
+                          key={`${menu.label}.${k}`}
+                          className={`${menu.icon} text-stone-800 bg-slate-50 hover:bg-slate-400 py-[2px] h-8 items-center mb-[6px] rounded-sm flex justify-center w-full cursor-pointer`}
+                          onClick={() => {
+                            toggleSub(menu.label);
+                          }}
+                        >
+                          <div className="flex-1 justify-between items-center flex">
+                            <span className="pl-2 hidden lg:block">
+                              {menu.label}
+                            </span>
+                            <i
+                              className={
+                                openSub[menu.label]
+                                  ? "icon-up-open text-xs"
+                                  : "icon-down-open text-xs"
+                              }
+                            ></i>
+                          </div>
+                        </span>
+                      ) : (
+                        <Link
+                          href={menu.href}
+                          key={`${menu.label}.${k}`}
+                          className={`${menu.icon} text-stone-800 border-b hover:bg-slate-400 py-[2px] h-8 items-center mb-[6px] rounded-sm flex justify-center w-full`}
+                        >
+                          <div className="flex-1 justify-between items-center flex">
+                            <span className="pl-2 hidden lg:block">
+                              {menu.label}
+                            </span>
+                          </div>
+                        </Link>
+                      )}
+
+                      {openSub[menu.label] &&
+                        menu.items?.map((drpdwn, idx) => {
+                          if (
+                            drpdwn.visible.includes(role) ||
+                            drpdwn.visible.includes("*")
+                          ) {
+                            return (
+                              <Link
+                                href={drpdwn.href}
+                                key={idx}
+                                className="flex items-center gap-2 px-2 py-1 my-1 text-sm bg-gray-50 hover:bg-gray-400 rounded-sm pl-6"
+                              >
+                                <i
+                                  className={`${drpdwn.icon} w-6 text-center`}
+                                />
+                                <span className="hidden lg:block">
+                                  {drpdwn.label}
+                                </span>
+                              </Link>
+                            );
+                          }
+                        })}
+                    </div>
                   );
                 }
               })}

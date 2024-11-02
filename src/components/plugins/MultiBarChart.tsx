@@ -95,7 +95,7 @@ const MultipleBarChart: React.FC<MultipleBarChartProps> = ({
           y1="10"
           x2="40"
           y2={chartHeight - 30}
-          stroke="black"
+          stroke="#d1d5db"
           strokeWidth="0.5"
           fill="pink"
         />
@@ -106,8 +106,8 @@ const MultipleBarChart: React.FC<MultipleBarChartProps> = ({
           y1={chartHeight - 30}
           x2={chartWidth - 10}
           y2={chartHeight - 30}
-          stroke="black"
-          strokeWidth="0.5"
+          stroke="d1d5db"
+          strokeWidth="1"
         />
 
         {/* Y-axis grid lines and labels */}

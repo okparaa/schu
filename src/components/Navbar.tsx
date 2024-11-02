@@ -2,11 +2,11 @@ const Navbar = () => {
   return (
     <div className="flex bg-white justify-end md:justify-between items-center p-4">
       <div className="hidden md:flex items-center rounded-full text-sm ring-[1px] ring-gray-300 w-[230px] focus-within:ring-gray-400">
-        <i className="icon-search text-xl"></i>
+        <i className="icon-search text-gray-300 text-xl"></i>
         <input
           type="text"
           placeholder="Search..."
-          className="w-[90%] bg-transparent p-1 outline-none"
+          className="w-[98%] bg-transparent p-1 outline-none overflow-hidden"
         />
       </div>
       <div className="flex gap-5 items-center justify-between">
@@ -15,7 +15,7 @@ const Navbar = () => {
         </div>
         <div className="flex items-center justify-center relative">
           <i className="icon-megaphone text-xl"></i>
-          <span className="absolute w-5 h-5 text-white -top-3 -right-2 flex items-center justify-center text-[10px] bg-purple-500 rounded-full">
+          <span className="absolute w-5 h-5 text-gray-800 font-semibold -top-3 -right-2 flex items-center justify-center text-[10px] bg-blue-300 rounded-full border border-blue-600">
             1
           </span>
         </div>

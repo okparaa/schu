@@ -16,7 +16,7 @@ export default function DashLayout({
 }>) {
   return (
     <div className="h-screen flex bg-white">
-      <div className="w-[14%] md:w-[8%] lg:w-[18%] xl:w-[14%] p-3">
+      <div className="w-[13%] md:w-[9%] lg:w-[19%] xl:w-[15%] p-3">
         <Link
           href="/"
           className="flex justify-center lg:justify-start items-center"
@@ -34,7 +34,7 @@ export default function DashLayout({
         </Link>
         <Menu />
       </div>
-      <div className="w-[86%] md:w-[92%] lg:w-[82%] xl:w-[86%] bg-slate-100 overflow-scroll">
+      <div className="w-[87%] md:w-[91%] lg:w-[81%] xl:w-[85%] bg-slate-100 overflow-scroll flex flex-col">
         <Navbar />
         {children}
       </div>

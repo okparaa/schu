@@ -29,16 +29,13 @@ const EventCalendar = () => {
   return (
     <div className="flex justify-center items-center bg-gray-100 flex-col gap-2">
       <Calendar onDateClick={handleDateClick} />
-      <div className="flex flex-col gap-3 bg-white p-4">
+      <div className="flex flex-col gap-3 bg-white p-2">
         <div className="flex justify-between items-center">
-          <h1 className="text-xl font-semibold my-4">Events</h1>
+          <h1 className="text-xl font-semibold my-2">Events</h1>
           <span className="icon-dot-3"></span>
         </div>
         {events.map((item) => (
-          <div
-            className="border-stone-700 border-t p-1 rounded-md"
-            key={item.id}
-          >
+          <div className="border-stone-300 border-t p-1" key={item.id}>
             <div className="flex justify-between items-center">
               <h1 className="font-bold text-sm text-gray-600">{item.title}</h1>
               <span className="text-gray-300 text-xs">{item.time}</span>

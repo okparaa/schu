@@ -108,7 +108,7 @@ const MultiLineChart: React.FC<MultiLineChartProps> = ({
           y1="10"
           x2="40"
           y2={chartHeight - 30}
-          stroke="black"
+          stroke="#d1d5db"
           strokeWidth="0.5"
         />
 
@@ -118,7 +118,7 @@ const MultiLineChart: React.FC<MultiLineChartProps> = ({
           y1={chartHeight - 30}
           x2={chartWidth - 10}
           y2={chartHeight - 30}
-          stroke="black"
+          stroke="#d1d5db"
           strokeWidth="0.5"
         />
 
@@ -134,7 +134,7 @@ const MultiLineChart: React.FC<MultiLineChartProps> = ({
                 y1={y}
                 x2={chartWidth - 10}
                 y2={y}
-                stroke="#E5E7EB"
+                stroke="#d1d5db"
                 strokeWidth="0.5"
               />
               <text

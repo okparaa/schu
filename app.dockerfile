@@ -8,10 +8,9 @@ FROM base AS production
 
 RUN addgroup bee && adduser -S -G bee bee
 
-RUN --mount=type=bind,source=package.json,target=package.json \
-    --mount=type=bind,source=package-lock.json,target=package-lock.json \
-    --mount=type=cache,target=/bee/.npm \
-    npm ci
+COPY package*.json ./
+
+RUN --mount=type=cache,target=/bee/.npm npm install
 
 RUN --mount=type=cache,target=/bee/.npm npm install typescript -g 
 
@@ -31,10 +30,9 @@ ENTRYPOINT [ "/sch/prod.start.sh" ]
 # Install development dependencies and tools for dev builds
 FROM base AS development
 
-RUN --mount=type=bind,source=package.json,target=package.json \
-    --mount=type=bind,source=package-lock.json,target=package-lock.json \
-    --mount=type=cache,target=/node/.npm \
-    npm ci --include=dev
+COPY package*.json ./
+
+RUN --mount=type=cache,target=/bee/.npm npm install
 
 # Copy the entire source code for development
 COPY --chown=node:node . .
@@ -45,4 +43,4 @@ COPY --chown=node:node . .
 USER node
 
 # Default command for development
-ENTRYPOINT [ "/app/dev.start.sh" ]
+ENTRYPOINT [ "/app/dev.start.sh" ]  

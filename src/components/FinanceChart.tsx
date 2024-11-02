@@ -10,11 +10,11 @@ const data = [
 
 const labels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "jul"];
 
-const colors = ["red", "green"]; // Optional colors for lines
+const colors = ["#9ca3af", "#9ca3af"]; // Optional colors for lines
 
 const FinanceChart: React.FC = () => {
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center text-gray-400">
       <MultiLineChart data={data} labels={labels} colors={colors} />
     </div>
   );

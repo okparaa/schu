@@ -20,12 +20,12 @@ const Announcements = () => {
     },
   ];
   return (
-    <div className="bg-white p-4 rounded-md">
+    <div className="bg-white p-2 rounded-md">
       <div className="flex justify-between items-center">
         <h1 className="text-xl font-semibold">Announcements</h1>
         <span className="text-sm text-gray-400">View All</span>
       </div>
-      <div className="flex flex-col gap-4 mt-4">
+      <div className="flex flex-col gap-2 mt-2">
         {announcements.map((item) => (
           <div key={item.id} className="rounded-full text-gray-600">
             <div className="flex justify-between items-center">

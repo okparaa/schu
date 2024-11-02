@@ -19,9 +19,10 @@ type Event = {
 
 type BigCalendarProps = {
   events: Event[];
+  title: string;
 };
 
-const BigCalendar: React.FC<BigCalendarProps> = ({ events }) => {
+const BigCalendar: React.FC<BigCalendarProps> = ({ events, title }) => {
   const [currentDate, setCurrentDate] = useState(dayjs());
   const [view, setView] = useState<"weekly" | "daily">("weekly");
 
@@ -56,7 +57,7 @@ const BigCalendar: React.FC<BigCalendarProps> = ({ events }) => {
   };
 
   return (
-    <div className="w-full max-w-5xl mx-auto bg-white shadow-md rounded-lg">
+    <div className="w-full max-w-5xl mx-auto bg-white rounded-lg">
       {/* View Selector */}
       <div className="flex items-center justify-between p-4 border-b border-gray-200">
         <div className="flex w-1/6 justify-between items-center">
@@ -69,6 +70,7 @@ const BigCalendar: React.FC<BigCalendarProps> = ({ events }) => {
             className="text-gray-50 hover:text-blue-200 h-8 w-8 rounded-full icon-right-open hover:outline bg-blue-500"
           ></button>
         </div>
+        <div className="text-center font-semibold text-xl">{title}</div>
         <select
           value={view}
           onChange={(e) => setView(e.target.value as "weekly" | "daily")}
@@ -100,7 +102,7 @@ const BigCalendar: React.FC<BigCalendarProps> = ({ events }) => {
         {hours.map((hour) => (
           <React.Fragment key={hour}>
             {/* Time Slot Labels */}
-            <div className="p-2 border-b border-gray-200 text-center text-gray-500">
+            <div className="p-2 border-b border-gray-200 text-center text-gray-500 col-span-1">
               {dayjs().hour(hour).format("h A")}
             </div>
 
@@ -108,7 +110,9 @@ const BigCalendar: React.FC<BigCalendarProps> = ({ events }) => {
             {daysOfWeek.map((day) => (
               <div
                 key={day.toString() + hour}
-                className="relative border-b border-gray-200 h-16"
+                className={`relative border-b border-gray-200 ${
+                  view == "weekly" ? "" : "col-span-7"
+                }`}
               >
                 {/* Events in the Time Slot */}
                 {getEventsForTimeSlot(day, hour).map((event) => (

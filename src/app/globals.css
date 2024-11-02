@@ -6,14 +6,21 @@
 body > div > div {
   @apply border;
 } */
+
+.i-btn {
+  @apply cursor-pointer h-7 w-7 rounded-full bg-blue-300 text-gray-800 text-xs flex items-center justify-center hover:ring-1 border border-blue-500;
+}
+.c-btn {
+  @apply cursor-pointer h-6 w-6 rounded-md bg-blue-300 text-gray-800 text-xs flex items-center justify-center hover:ring-1;
+}
 @font-face {
   font-family: "schapp";
-  src: url("./fonts/schapp.eot?59060142");
-  src: url("./fonts/schapp.eot?59060142#iefix") format("embedded-opentype"),
-    url("./fonts/schapp.woff2?59060142") format("woff2"),
-    url("./fonts/schapp.woff?59060142") format("woff"),
-    url("./fonts/schapp.ttf?59060142") format("truetype"),
-    url("./fonts/schapp.svg?59060142#schapp") format("svg");
+  src: url("./fonts/schapp.eot?37005850");
+  src: url("./fonts/schapp.eot?37005850#iefix") format("embedded-opentype"),
+    url("./fonts/schapp.woff2?37005850") format("woff2"),
+    url("./fonts/schapp.woff?37005850") format("woff"),
+    url("./fonts/schapp.ttf?37005850") format("truetype"),
+    url("./fonts/schapp.svg?37005850#schapp") format("svg");
   font-weight: normal;
   font-style: normal;
 }
@@ -172,6 +179,9 @@ body > div > div {
 .icon-eye:before {
   content: "\e82c";
 } /* '' */
+.icon-plus:before {
+  content: "\e82d";
+} /* '' */
 .icon-down-open:before {
   content: "\f004";
 } /* '' */
@@ -202,6 +212,9 @@ body > div > div {
 .icon-users:before {
   content: "\f064";
 } /* '' */
+.icon-filter:before {
+  content: "\f0b0";
+} /* '' */
 .icon-table:before {
   content: "\f0ce";
 } /* '' */
@@ -232,6 +245,12 @@ body > div > div {
 .icon-ok-squared:before {
   content: "\f14a";
 } /* '' */
+.icon-sort-alt-up:before {
+  content: "\f160";
+} /* '' */
+.icon-sort-alt-down:before {
+  content: "\f161";
+} /* '' */
 .icon-female:before {
   content: "\f182";
 } /* '' */

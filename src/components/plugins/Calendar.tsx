@@ -64,7 +64,7 @@ const Calendar: React.FC<CalendarProps> = ({ onDateClick }) => {
   const daysArray = generateCalendarDays();
 
   return (
-    <div className="w-full max-w-md mx-auto bg-white shadow-md rounded-lg p-4">
+    <div className="w-full max-w-md mx-auto bg-white rounded-lg p-4">
       <div className="flex items-center justify-between mb-3">
         <button
           onClick={handlePrevMonth}
