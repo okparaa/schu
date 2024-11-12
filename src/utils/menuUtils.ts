@@ -107,7 +107,7 @@ export const menuItems = [
           {
             icon: "icon-calendar",
             label: "Events",
-            href: "/events",
+            href: "/dash/list/events",
             visible: ["*"],
           },
         ],
@@ -120,8 +120,8 @@ export const menuItems = [
       },
       {
         icon: "icon-bullhorn",
-        label: "Info",
-        href: "/info",
+        label: "Announcements",
+        href: "/dash/list/announcements",
         visible: ["*"],
       },
     ],

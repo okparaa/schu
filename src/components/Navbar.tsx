@@ -1,6 +1,6 @@
 const Navbar = () => {
   return (
-    <div className="flex bg-white justify-end md:justify-between items-center p-4">
+    <div className="flex bg-white justify-end md:justify-between items-center p-2">
       <div className="hidden md:flex items-center rounded-full text-sm ring-[1px] ring-gray-300 w-[230px] focus-within:ring-gray-400">
         <i className="icon-search text-gray-300 text-xl"></i>
         <input

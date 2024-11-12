@@ -1,10 +1,10 @@
+import FormModal from "@/components/FormModal";
 import { role } from "@/lib/data";
-import Link from "next/link";
 type LessonProps = {
   id: string;
   subject: string;
   class: string;
-  staff: string;
+  teacher: string;
 };
 
 export const LessonRow = (row: LessonProps) => {
@@ -15,15 +15,14 @@ export const LessonRow = (row: LessonProps) => {
     >
       <td className="flex items-center p-4 py-3">{row.subject}</td>
       <td className="">{row.class}</td>
-      <td className="hidden md:table-cell">{row.staff}</td>
+      <td className="hidden md:table-cell">{row.teacher}</td>
       <td className="w-32">
         <div className="flex items-center justify-center gap-3">
-          <Link
-            className="icon-columns i-btn"
-            href={`/dash/list/staff/${row.id}`}
-          ></Link>
           {role == "admin" && (
-            <span className="icon-cancel i-btn" id={`${row.id}`}></span>
+            <>
+              <FormModal table="lesson" type="update" data={row} />
+              <FormModal table="lesson" type="delete" id={row.id} />
+            </>
           )}
         </div>
       </td>

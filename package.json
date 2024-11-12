@@ -19,10 +19,7 @@
     "react": "19.0.0-rc-69d4b800-20241021",
     "react-dom": "19.0.0-rc-69d4b800-20241021",
     "react-hook-form": "^7.53.1",
-    "react-image-crop": "^11.0.7",
-    "react-toastify": "^10.0.6",
-    "recharts": "^2.13.0",
-    "valibot": "^0.42.1"
+    "react-toastify": "^10.0.6"
   },
   "devDependencies": {
     "@testing-library/dom": "^10.4.0",

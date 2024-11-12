@@ -15,7 +15,7 @@ const Menu = () => {
       {menuItems.map((item, i) => {
         return (
           <div key={`${item.title}.${i}`} className="flex flex-col gap-2">
-            <hr className="my-2 bg-black" />
+            <hr className="my-2 bg-blue-200 p-[0.5px]" />
             <div className="m-0 flex flex-col justify-start">
               {item.items.map((menu, k) => {
                 if (menu.visible.includes(role) || menu.visible.includes("*")) {
@@ -24,7 +24,7 @@ const Menu = () => {
                       {menu.sub ? (
                         <span
                           key={`${menu.label}.${k}`}
-                          className={`${menu.icon} text-stone-800 bg-slate-50 hover:bg-slate-400 py-[2px] h-8 items-center mb-[6px] rounded-sm flex justify-center w-full cursor-pointer`}
+                          className={`${menu.icon} text-stone-800 hover:bg-blue-50 py-[2px] h-8 items-center mb-[6px] rounded-md flex justify-center w-full cursor-pointer`}
                           onClick={() => {
                             toggleSub(menu.label);
                           }}
@@ -46,10 +46,10 @@ const Menu = () => {
                         <Link
                           href={menu.href}
                           key={`${menu.label}.${k}`}
-                          className={`${menu.icon} text-stone-800 border-b hover:bg-slate-400 py-[2px] h-8 items-center mb-[6px] rounded-sm flex justify-center w-full`}
+                          className={`${menu.icon} text-stone-800 hover:bg-blue-50 py-[2px] h-8 items-center mb-[6px] rounded-md flex justify-center w-full text-lg`}
                         >
                           <div className="flex-1 justify-between items-center flex">
-                            <span className="pl-2 hidden lg:block">
+                            <span className="pl-2 hidden lg:block text-base">
                               {menu.label}
                             </span>
                           </div>
@@ -66,7 +66,7 @@ const Menu = () => {
                               <Link
                                 href={drpdwn.href}
                                 key={idx}
-                                className="flex items-center gap-2 px-2 py-1 my-1 text-sm bg-gray-50 hover:bg-gray-400 rounded-sm pl-6"
+                                className="flex items-center gap-2 px-2 py-1 my-1 text-sm hover:bg-blue-50 rounded-md pl-6"
                               >
                                 <i
                                   className={`${drpdwn.icon} w-6 text-center`}

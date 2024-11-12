@@ -109,7 +109,7 @@ const MultiLineChart: React.FC<MultiLineChartProps> = ({
           x2="40"
           y2={chartHeight - 30}
           stroke="#d1d5db"
-          strokeWidth="0.5"
+          strokeWidth="1"
         />
 
         {/* X-axis */}
@@ -119,7 +119,7 @@ const MultiLineChart: React.FC<MultiLineChartProps> = ({
           x2={chartWidth - 10}
           y2={chartHeight - 30}
           stroke="#d1d5db"
-          strokeWidth="0.5"
+          strokeWidth="1"
         />
 
         {/* Y-axis grid lines and labels */}
@@ -171,7 +171,7 @@ const MultiLineChart: React.FC<MultiLineChartProps> = ({
                     ? colors[lineIndex]
                     : `hsl(${(lineIndex / data.length) * 360}, 70%, 60%)`
                 }
-                strokeWidth="0.5"
+                strokeWidth="1"
                 className="line-animation"
                 style={{
                   strokeDasharray: "2000",
@@ -192,7 +192,7 @@ const MultiLineChart: React.FC<MultiLineChartProps> = ({
                       cx={x}
                       cy={y}
                       r={3}
-                      stroke="green"
+                      stroke="black"
                       fill="white"
                       onMouseEnter={(event) => handleMouseEnter(event, value)}
                       onMouseMove={handleMouseMove}
@@ -229,7 +229,7 @@ const MultiLineChart: React.FC<MultiLineChartProps> = ({
       )}
 
       {/* X-axis Labels */}
-      <div className="flex justify-between mt-2">
+      <div className="flex justify-between bg-white -mt-5 pl-6">
         {labels.map((label, index) => (
           <span key={index} className="text-sm text-gray-700">
             {label}

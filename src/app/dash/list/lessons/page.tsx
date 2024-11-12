@@ -5,6 +5,7 @@ import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
 import { lessonsData, role } from "@/lib/data";
 import { LessonRow } from "./listRow";
+import FormModal from "@/components/FormModal";
 
 const LessonListPage = () => {
   const columns = [
@@ -37,7 +38,7 @@ const LessonListPage = () => {
           <div className="flex items-center gap-2 self-end">
             <span className="icon-params i-btn"></span>
             <span className="icon-sort-alt-down i-btn"></span>
-            {role == "admin" && <span className="icon-plus i-btn"></span>}
+            {role == "admin" && <FormModal table="lesson" type="create" />}
           </div>
         </div>
       </div>

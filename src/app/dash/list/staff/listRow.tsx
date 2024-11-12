@@ -1,10 +1,11 @@
+import FormModal from "@/components/FormModal";
 import { role } from "@/lib/data";
 import Image from "next/image";
 import Link from "next/link";
 
 export type StaffProps = {
   id: string;
-  staff_id: string;
+  teacherId: string;
   name: string;
   email?: string;
   photo: string;
@@ -27,24 +28,25 @@ export const StaffRow = (row: StaffProps) => {
           width={40}
           className="w-10 h-10 rounded-full object-cover"
         />
-        <div className="flex flex-col">
-          <h1 className="font-semibold">{row.name}</h1>
-          <p className="text-xs text-gray-500">{row.email}</p>
-        </div>
+        <Link className="underline" href={`/dash/list/staff/${row.id}`}>
+          <div className="flex flex-col">
+            <h1 className="font-semibold">{row.name}</h1>
+            <p className="text-xs text-gray-500">{row.email}</p>
+          </div>
+        </Link>
       </td>
-      <td className="hidden md:table-cell">{row.staff_id}</td>
+      <td className="hidden md:table-cell">{row.teacherId}</td>
       <td className="hidden md:table-cell">{row.subjects.join(", ")}</td>
       <td className="hidden md:table-cell">{row.classes.join(", ")}</td>
       <td className="hidden lg:table-cell">{row.phone}</td>
       <td className="hidden lg:table-cell">{row.address}</td>
       <td className="w-32">
         <div className="flex items-center justify-center gap-3">
-          <Link
-            className="icon-columns i-btn"
-            href={`/dash/list/staff/${row.id}`}
-          ></Link>
           {role == "admin" && (
-            <span className="icon-cancel i-btn" id={`${row.id}`}></span>
+            <>
+              <FormModal table="teacher" type="update" data={row} />
+              <FormModal table="teacher" type="delete" id={row.id} />
+            </>
           )}
         </div>
       </td>

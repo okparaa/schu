@@ -15,15 +15,16 @@ body > div > div {
 }
 @font-face {
   font-family: "schapp";
-  src: url("./fonts/schapp.eot?37005850");
-  src: url("./fonts/schapp.eot?37005850#iefix") format("embedded-opentype"),
-    url("./fonts/schapp.woff2?37005850") format("woff2"),
-    url("./fonts/schapp.woff?37005850") format("woff"),
-    url("./fonts/schapp.ttf?37005850") format("truetype"),
-    url("./fonts/schapp.svg?37005850#schapp") format("svg");
+  src: url("./fonts/schapp.eot?45019411");
+  src: url("./fonts/schapp.eot?45019411#iefix") format("embedded-opentype"),
+    url("./fonts/schapp.woff2?45019411") format("woff2"),
+    url("./fonts/schapp.woff?45019411") format("woff"),
+    url("./fonts/schapp.ttf?45019411") format("truetype"),
+    url("./fonts/schapp.svg?45019411#schapp") format("svg");
   font-weight: normal;
   font-style: normal;
 }
+
 [class^="icon-"]:before,
 [class*=" icon-"]:before {
   font-family: "schapp";
@@ -44,6 +45,7 @@ body > div > div {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
 .icon-cancel:before {
   content: "\e800";
 } /* '' */
@@ -182,6 +184,9 @@ body > div > div {
 .icon-plus:before {
   content: "\e82d";
 } /* '' */
+.icon-trash:before {
+  content: "\e82e";
+} /* '' */
 .icon-down-open:before {
   content: "\f004";
 } /* '' */
@@ -227,9 +232,6 @@ body > div > div {
 .icon-user-md:before {
   content: "\f0f0";
 } /* '' */
-.icon-food:before {
-  content: "\f0f5";
-} /* '' */
 .icon-flag-empty:before {
   content: "\f11d";
 } /* '' */
@@ -275,6 +277,9 @@ body > div > div {
 .icon-chart-line:before {
   content: "\f201";
 } /* '' */
+.icon-calendar-plus-o:before {
+  content: "\f271";
+} /* '' */
 .icon-commenting:before {
   content: "\f27a";
 } /* '' */

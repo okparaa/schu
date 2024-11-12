@@ -1,5 +1,5 @@
+import FormModal from "@/components/FormModal";
 import { role } from "@/lib/data";
-import Link from "next/link";
 
 type ParentProps = {
   id: string;
@@ -27,12 +27,11 @@ export const ParentsRow = (row: ParentProps) => {
       <td className="hidden lg:table-cell">{row.address}</td>
       <td className="w-32">
         <div className="flex items-center justify-center gap-3">
-          <Link
-            className="icon-columns i-btn"
-            href={`/dash/list/staff/${row.id}`}
-          ></Link>
           {role == "admin" && (
-            <span className="icon-cancel i-btn" id={`${row.id}`}></span>
+            <>
+              <FormModal table="parent" type="update" data={row} />
+              <FormModal table="parent" type="delete" id={row.id} />
+            </>
           )}
         </div>
       </td>

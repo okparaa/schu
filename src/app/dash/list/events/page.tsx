@@ -4,37 +4,33 @@ import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
 import { eventsData, role } from "@/lib/data";
-import { ResultRow } from "./listRow";
+import { EventRow } from "./listRow";
+import FormModal from "@/components/FormModal";
 
 const EventsListPage = () => {
   const columns = [
     {
-      header: "Subject",
-      accessor: "subject",
+      header: "Title",
+      accessor: "title",
       className: "pl-4",
-    },
-    {
-      header: "Student",
-      accessor: "student",
-    },
-    {
-      header: "Score",
-      accessor: "score",
-      className: "hidden md:table-cell",
-    },
-    {
-      header: "Teacher",
-      accessor: "teacher",
-      className: "hidden md:table-cell",
     },
     {
       header: "Class",
       accessor: "class",
-      className: "hidden md:table-cell",
     },
     {
       header: "Date",
       accessor: "date",
+      className: "hidden md:table-cell",
+    },
+    {
+      header: "Start Time",
+      accessor: "startTime",
+      className: "hidden md:table-cell",
+    },
+    {
+      header: "End Time",
+      accessor: "endTime",
       className: "hidden md:table-cell",
     },
     {
@@ -52,11 +48,11 @@ const EventsListPage = () => {
           <div className="flex items-center gap-2 self-end">
             <span className="icon-params i-btn"></span>
             <span className="icon-sort-alt-down i-btn"></span>
-            {role == "admin" && <span className="icon-plus i-btn"></span>}
+            {role == "admin" && <FormModal table="event" type="create" />}
           </div>
         </div>
       </div>
-      <Table columns={columns} renderRow={ResultRow} data={eventsData} />
+      <Table columns={columns} renderRow={EventRow} data={eventsData} />
       {/* {renderRow} */}
       <Pagination />
     </div>

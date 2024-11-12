@@ -5,6 +5,7 @@ import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
 import { role, subjectsData } from "@/lib/data";
 import { SubjectRow } from "./listRow";
+import FormModal from "@/components/FormModal";
 
 const SubjectListPage = () => {
   const columns = [
@@ -33,7 +34,7 @@ const SubjectListPage = () => {
           <div className="flex items-center gap-2 self-end">
             <span className="icon-params i-btn"></span>
             <span className="icon-sort-alt-down i-btn"></span>
-            {role == "admin" && <span className="icon-plus i-btn"></span>}
+            {role == "admin" && <FormModal table="subject" type="create" />}
           </div>
         </div>
       </div>

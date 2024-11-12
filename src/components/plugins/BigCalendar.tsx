@@ -11,10 +11,10 @@ dayjs.extend(isToday);
 dayjs.extend(advancedFormat);
 
 type Event = {
-  id: number;
+  allDay: boolean;
   title: string;
-  start: dayjs.Dayjs;
-  end: dayjs.Dayjs;
+  start: Date;
+  end: Date;
 };
 
 type BigCalendarProps = {
@@ -26,9 +26,10 @@ const BigCalendar: React.FC<BigCalendarProps> = ({ events, title }) => {
   const [currentDate, setCurrentDate] = useState(dayjs());
   const [view, setView] = useState<"weekly" | "daily">("weekly");
 
+  // Generate only weekdays for the weekly view
   const daysOfWeek =
     view === "weekly"
-      ? Array.from({ length: 7 }, (_, i) => currentDate.weekday(i))
+      ? Array.from({ length: 5 }, (_, i) => currentDate.weekday(i + 1)) // Weekdays: Monday (1) to Friday (5)
       : [currentDate];
 
   const hours = Array.from({ length: 10 }, (_, i) => i + 8); // 8 AM to 5 PM
@@ -48,12 +49,19 @@ const BigCalendar: React.FC<BigCalendarProps> = ({ events, title }) => {
 
   // Filter events for each day and time slot
   const getEventsForTimeSlot = (day: dayjs.Dayjs, hour: number) => {
-    return events.filter(
-      (event) =>
-        event.start.isSame(day, "day") &&
-        event.start.hour() <= hour &&
-        event.end.hour() > hour
-    );
+    return events.filter((event) => {
+      const start = dayjs(event.start);
+      const end = dayjs(event.end);
+      return (
+        (start.isSame(day, "day") &&
+          start.hour() <= hour &&
+          end.hour() > hour) ||
+        (start.isSame(day, "day") &&
+          start.hour() === hour &&
+          start.minute() <= 0 &&
+          end.minute() > 0)
+      );
+    });
   };
 
   return (
@@ -82,7 +90,7 @@ const BigCalendar: React.FC<BigCalendarProps> = ({ events, title }) => {
       </div>
 
       {/* Days Header */}
-      <div className="grid grid-cols-8 border-b border-gray-200 text-center text-gray-700 font-semibold">
+      <div className="grid grid-cols-6 border-b border-gray-200 text-center text-gray-700 font-semibold">
         <div className="p-2">Time</div>
         {daysOfWeek.map((day) => (
           <div
@@ -98,7 +106,7 @@ const BigCalendar: React.FC<BigCalendarProps> = ({ events, title }) => {
       </div>
 
       {/* Time Slots */}
-      <div className="grid grid-cols-8 text-sm">
+      <div className="grid grid-cols-6 text-sm">
         {hours.map((hour) => (
           <React.Fragment key={hour}>
             {/* Time Slot Labels */}
@@ -110,17 +118,19 @@ const BigCalendar: React.FC<BigCalendarProps> = ({ events, title }) => {
             {daysOfWeek.map((day) => (
               <div
                 key={day.toString() + hour}
-                className={`relative border-b border-gray-200 ${
-                  view == "weekly" ? "" : "col-span-7"
+                className={`relative border-b border-gray-200 h-[60px] ${
+                  view === "weekly" ? "" : "col-span-7"
                 }`}
               >
                 {/* Events in the Time Slot */}
-                {getEventsForTimeSlot(day, hour).map((event) => (
+                {getEventsForTimeSlot(day, hour).map((event, idx) => (
                   <div
-                    key={event.id}
-                    className="absolute inset-0 p-1 bg-blue-200 rounded-md shadow-md text-xs text-blue-800 line-clamp-2"
+                    key={idx}
+                    className="absolute inset-0 p-1 bg-blue-100 rounded-md text-xs text-stone-800 line-clamp-2 m-2"
                   >
-                    {event.title}
+                    <span className="flex justify-center items-center h-full">
+                      {event.title}
+                    </span>
                   </div>
                 ))}
               </div>
