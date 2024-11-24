@@ -2,10 +2,27 @@
 @tailwind components;
 @tailwind utilities;
 
-/* body > div,
-body > div > div {
-  @apply border;
-} */
+@layer utilities {
+  .scrollbar::-webkit-scrollbar {
+    width: 20px;
+    height: 20px;
+  }
+
+  .scrollbar::-webkit-scrollbar-track {
+    border-radius: 100vh;
+    background: #f7f4ed;
+  }
+
+  .scrollbar::-webkit-scrollbar-thumb {
+    background: #e0cbcb;
+    border-radius: 100vh;
+    border: 3px solid #f6f7ed;
+  }
+
+  .scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #c0a0b9;
+  }
+}
 
 .i-btn {
   @apply cursor-pointer h-7 w-7 rounded-full bg-blue-300 text-gray-800 text-xs flex items-center justify-center hover:ring-1 border border-blue-500;
@@ -13,18 +30,28 @@ body > div > div {
 .c-btn {
   @apply cursor-pointer h-6 w-6 rounded-md bg-blue-300 text-gray-800 text-xs flex items-center justify-center hover:ring-1;
 }
+
 @font-face {
   font-family: "schapp";
-  src: url("./fonts/schapp.eot?45019411");
-  src: url("./fonts/schapp.eot?45019411#iefix") format("embedded-opentype"),
-    url("./fonts/schapp.woff2?45019411") format("woff2"),
-    url("./fonts/schapp.woff?45019411") format("woff"),
-    url("./fonts/schapp.ttf?45019411") format("truetype"),
-    url("./fonts/schapp.svg?45019411#schapp") format("svg");
+  src: url("./fonts/schapp.eot?48667867");
+  src: url("./fonts/schapp.eot?48667867#iefix") format("embedded-opentype"),
+    url("./fonts/schapp.woff2?48667867") format("woff2"),
+    url("./fonts/schapp.woff?48667867") format("woff"),
+    url("./fonts/schapp.ttf?48667867") format("truetype"),
+    url("./fonts/schapp.svg?48667867#schapp") format("svg");
   font-weight: normal;
   font-style: normal;
 }
-
+/* Chrome hack: SVG is rendered more smooth in Windozze. 100% magic, uncomment if you need it. */
+/* Note, that will break hinting! In other OS-es font will be not as sharp as it could be */
+/*
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+  @font-face {
+    font-family: 'schapp';
+    src: url('../font/schapp.svg?48667867#schapp') format('svg');
+  }
+}
+*/
 [class^="icon-"]:before,
 [class*=" icon-"]:before {
   font-family: "schapp";
@@ -36,14 +63,28 @@ body > div > div {
   width: 1em;
   margin-right: 0.2em;
   text-align: center;
+  /* opacity: .8; */
+
+  /* For safety - reset parent styles, that can break glyph codes*/
   font-variant: normal;
   text-transform: none;
 
+  /* fix buttons height, for twitter bootstrap */
   line-height: 1em;
 
+  /* Animation center compensation - margins should be symmetric */
+  /* remove if not needed */
   margin-left: 0.2em;
+
+  /* you can be more comfortable with increased icons size */
+  /* font-size: 120%; */
+
+  /* Font smoothing. That was taken from TWBS */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  /* Uncomment for 3D effect */
+  /* text-shadow: 1px 1px 1px rgba(127, 127, 127, 0.3); */
 }
 
 .icon-cancel:before {
@@ -187,6 +228,9 @@ body > div > div {
 .icon-trash:before {
   content: "\e82e";
 } /* '' */
+.icon-upload-cloud-outline:before {
+  content: "\e82f";
+} /* '' */
 .icon-down-open:before {
   content: "\f004";
 } /* '' */

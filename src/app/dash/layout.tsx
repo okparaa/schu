@@ -34,7 +34,7 @@ export default function DashLayout({
         </Link>
         <Menu />
       </div>
-      <div className="w-[87%] md:w-[91%] lg:w-[81%] xl:w-[85%] bg-slate-100 overflow-scroll flex flex-col">
+      <div className="w-[87%] md:w-[91%] lg:w-[81%] xl:w-[85%] bg-slate-100 flex flex-col overflow-y-scroll scrollbar">
         <Navbar />
         {children}
       </div>

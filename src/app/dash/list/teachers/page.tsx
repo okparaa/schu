@@ -1,11 +1,23 @@
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
-import { role, teachersData } from "@/lib/data";
-import { StaffRow } from "./listRow";
+import { role } from "@/lib/data";
+import { TeacherRow } from "./listRow";
 import FormModal from "@/components/FormModal";
+import { UsersService } from "@/server/services/users.service";
+import { UsersRepository } from "@/server/repository/users.repository";
+import { users } from "@/server/db/tables";
+import { ParamsProps } from "@/types/params";
+import { RequestQuerySchema } from "@/server/schemas/query.schema";
+// import { seed } from "@/server/db/seed";
 
-const StaffListPage = () => {
+const userService = new UsersService(new UsersRepository(users));
+
+async function TeachersPage({ searchParams }: ParamsProps) {
+  const result = RequestQuerySchema.parse(await searchParams);
+  const [teachers, count] = await userService.getTeachers(result.t, result.p);
+  // await seed();
+  const [total] = count;
   const columns = [
     {
       header: "Info",
@@ -56,11 +68,11 @@ const StaffListPage = () => {
           </div>
         </div>
       </div>
-      <Table columns={columns} renderRow={StaffRow} data={teachersData} />
+      <Table columns={columns} renderRow={TeacherRow} data={teachers} />
       {/* {renderRow} */}
-      <Pagination />
+      <Pagination page={result.p} total={total.count as number} />
     </div>
   );
-};
+}
 
-export default StaffListPage;
+export default TeachersPage;

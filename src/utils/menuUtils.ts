@@ -12,8 +12,8 @@ export const menuItems = [
 
       {
         icon: "icon-graduation-cap-1",
-        label: "Staff",
-        href: "/dash/staff",
+        label: "Teachers",
+        href: "/dash/teachers",
         visible: ["admin", "teacher"],
       },
       {
@@ -43,8 +43,8 @@ export const menuItems = [
           },
           {
             icon: "icon-eye",
-            label: "Staff",
-            href: "/dash/list/staff",
+            label: "Teachers",
+            href: "/dash/list/teachers",
             visible: ["admin"],
           },
           {

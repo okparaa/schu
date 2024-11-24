@@ -1,5 +1,5 @@
-"use client";
 import Announcements from "@/components/Announcements";
+import FormModal from "@/components/FormModal";
 import Metrics from "@/components/Metrics";
 import BigCalendar from "@/components/plugins/BigCalendar";
 import { calendarEvents } from "@/lib/data";
@@ -22,7 +22,28 @@ const SingleStaffPage = () => {
               />
             </div>
             <div className="w-2/3 flex flex-col justify-between gap-2">
-              <h1 className="text-xl font-semibold">Okpara Ifeanyi</h1>
+              <div className="flex justify-between">
+                <h1 className="text-xl font-semibold">Okpara Ifeanyi</h1>
+                <FormModal
+                  table="teacher"
+                  type="update"
+                  data={{
+                    id: "1",
+                    username: "iamokpara",
+                    email: "iamokpara@gmaill.com",
+                    password: "password",
+                    firstname: "emeka",
+                    lastname: "chinedu",
+                    phone: "08133709809",
+                    address: "umuezearo",
+                    bloodType: "A+",
+                    dateOfBirth: "2002-3-12",
+                    gender: "1",
+                    photo:
+                      "http://localhost:3000/_next/image?url=https%3A%2F%2Fimages.pexels.com%2Fphotos%2F2888150%2Fpexels-photo-2888150.jpeg%3Fauto%3Dcompress%26cs%3Dtinysrgb%26w%3D1200&w=48&q=75",
+                  }}
+                />
+              </div>
               <p className="text-sm to-gray-500">
                 Lorem ipsum dolor sit, amet consectetur adipisicing elit.
               </p>

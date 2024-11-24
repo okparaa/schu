@@ -1,6 +1,22 @@
 "use client";
 
 import { useState } from "react";
+import dynamic from "next/dynamic";
+import Loading from "./Loading";
+const TeacherForm = dynamic(() => import("./forms/TeacherForm"), {
+  ...Loading,
+});
+const StudentForm = dynamic(() => import("./forms/StudentForm"), {
+  ...Loading,
+});
+
+const forms: {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [key: string]: (type: "create" | "update", data?: any) => JSX.Element;
+} = {
+  teacher: (type, data) => <TeacherForm type={type} data={data} />,
+  student: (type, data) => <StudentForm type={type} data={data} />,
+};
 
 type FormModalProps = {
   table:
@@ -21,7 +37,7 @@ type FormModalProps = {
   data?: any;
   id?: string;
 };
-const FormModal = ({ table, type, data, id }: FormModalProps) => {
+const FormModal = ({ table, type, id, data }: FormModalProps) => {
   const [open, setOpen] = useState(false);
   const size = type === "create" ? "w-8 h-8" : "w-7 h-7";
   const icons = {
@@ -29,6 +45,7 @@ const FormModal = ({ table, type, data, id }: FormModalProps) => {
     update: "icon-edit",
     delete: "icon-trash",
   };
+
   const bgColor =
     type === "create"
       ? "bg-orange-700 text-orange-200"
@@ -44,12 +61,14 @@ const FormModal = ({ table, type, data, id }: FormModalProps) => {
         <span className="text-center font-medium">
           All data will be lost. Are you sure you want to delete this {table}
         </span>
-        <button className="bg-red-700 text-white py-2 px-4 rounded-md border-none w-max self-center">
+        <button className="bg-red-700 text-white py-2 px-4 rounded-md border-none self-center">
           delete
         </button>
       </form>
+    ) : type === "create" || type === "update" ? (
+      forms[table](type, data)
     ) : (
-      ""
+      "Form not found!"
     );
   };
   return (
@@ -59,15 +78,16 @@ const FormModal = ({ table, type, data, id }: FormModalProps) => {
         onClick={() => setOpen(true)}
       ></button>
       {open && (
-        <div className="w-screen h-screen absolute top-0 left-0 bg-black bg-opacity-60 z-50 flex justify-center items-center">
-          <div className="bg-white p-4 rounded-md relative">
+        <>
+          <div className="w-screen h-screen fixed top-0 left-0 bg-black bg-opacity-60 z-10 flex justify-center items-center"></div>
+          <div className="bg-white mx-auto top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-4 rounded-md z-20 absolute min-w-36">
             <Form />
             <span
-              className=" flex justify-center items-center icon-cancel h-5 w-5 absolute top-[4px] right-1 cursor-pointer rounded-full"
+              className="flex justify-center items-center icon-cancel h-8 w-8 absolute top-2 right-1 cursor-pointer text-white rounded-full bg-red-500"
               onClick={() => setOpen(false)}
             ></span>
           </div>
-        </div>
+        </>
       )}
     </>
   );

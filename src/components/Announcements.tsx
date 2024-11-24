@@ -27,7 +27,7 @@ const Announcements = () => {
       </div>
       <div className="flex flex-col gap-2 mt-2">
         {announcements.map((item) => (
-          <div key={item.id} className="rounded-full text-gray-600">
+          <div key={item.id} className="rounded-md text-gray-600 p-2 border">
             <div className="flex justify-between items-center">
               <h1 className="font-medium text-sm">{item.title}</h1>
               <span className="text-xs to-gray-400 bg-white rounded-md p-1">

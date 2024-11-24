@@ -1,4 +1,3 @@
-"use client";
 import Announcements from "@/components/Announcements";
 import Metrics from "@/components/Metrics";
 import BigCalendar from "@/components/plugins/BigCalendar";

@@ -1,5 +1,5 @@
 "use client";
-import { menuItems, role } from "@/utils/menuUtils";
+import { menuItems, role } from "../utils/menuUtils";
 import Link from "next/link";
 import { useState } from "react";
 

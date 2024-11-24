@@ -1,20 +1,10 @@
 import FormModal from "@/components/FormModal";
+import { Classes, Subjects, Users } from "@/server/db/tables";
 import { role } from "@/lib/data";
 import Image from "next/image";
 import Link from "next/link";
-
-export type StaffProps = {
-  id: string;
-  teacherId: string;
-  name: string;
-  email?: string;
-  photo: string;
-  phone: string;
-  subjects: string[];
-  classes: string[];
-  address: string;
-};
-export const StaffRow = (row: StaffProps) => {
+type TeacherList = Users & { subjects: Subjects[] } & { classes: Classes[] };
+export const TeacherRow = (row: TeacherList) => {
   return (
     <tr
       key={row.id}
@@ -22,22 +12,24 @@ export const StaffRow = (row: StaffProps) => {
     >
       <td className="flex gap-2 p-2">
         <Image
-          src={row.photo}
+          src={row.photo || "/noavatar.png"}
           alt=""
           height={40}
           width={40}
           className="w-10 h-10 rounded-full object-cover"
         />
-        <Link className="underline" href={`/dash/list/staff/${row.id}`}>
+        <Link className="underline" href={`/dash/list/teachers/${row.id}`}>
           <div className="flex flex-col">
-            <h1 className="font-semibold">{row.name}</h1>
+            <h1 className="font-semibold">
+              {row.surname} {row.firstname}
+            </h1>
             <p className="text-xs text-gray-500">{row.email}</p>
           </div>
         </Link>
       </td>
-      <td className="hidden md:table-cell">{row.teacherId}</td>
-      <td className="hidden md:table-cell">{row.subjects.join(", ")}</td>
-      <td className="hidden md:table-cell">{row.classes.join(", ")}</td>
+      <td className="hidden md:table-cell">{row.username}</td>
+      <td className="hidden md:table-cell">{row?.subjects.join(", ")}</td>
+      <td className="hidden md:table-cell">{row?.classes.join(", ")}</td>
       <td className="hidden lg:table-cell">{row.phone}</td>
       <td className="hidden lg:table-cell">{row.address}</td>
       <td className="w-32">
