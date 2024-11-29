@@ -1,6 +1,7 @@
-import { InferInsertModel } from "drizzle-orm";
+import { InferInsertModel, relations } from "drizzle-orm";
 import { boolean, pgTable, timestamp, varchar } from "drizzle-orm/pg-core";
 import { createId } from "../create-id";
+import { rolesPerms } from "./role_perms.table";
 
 export const perms = pgTable("perms", {
   id: varchar("id", { length: 128 })
@@ -18,3 +19,7 @@ export const perms = pgTable("perms", {
 });
 
 export type Perms = InferInsertModel<typeof perms>;
+
+export const permsRelations = relations(perms, ({ many }) => ({
+  rolesPerms: many(rolesPerms),
+}));

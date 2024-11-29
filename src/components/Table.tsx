@@ -10,9 +10,12 @@ const Table = ({ columns, renderRow, data }: TableProps) => {
   return (
     <table className="w-full mt-4">
       <thead>
-        <tr className="text-left text-sm text-gray-500">
+        <tr className="text-left font-bold text-sm bg-slate-50 text-gray-800">
           {columns.map((col) => (
-            <th key={col.accessor} className={col.className}>
+            <th
+              key={col.accessor}
+              className={`${col.className} py-2 border-y border-gray-200`}
+            >
               {col.header}
             </th>
           ))}

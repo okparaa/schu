@@ -1,11 +1,12 @@
 import { InferSelectModel, relations } from "drizzle-orm";
 import { boolean, pgTable, timestamp, varchar } from "drizzle-orm/pg-core";
 import { createId } from "../create-id";
-import { classes } from "./classes.table";
+import { users } from "./users.table";
+import { students } from "./students.table";
 
-export const grades = pgTable("grades", {
+export const parents = pgTable("parents", {
   id: varchar("id", { length: 128 })
-    .$defaultFn(() => createId("grades"))
+    .$defaultFn(() => createId("parents"))
     .primaryKey(),
   syn: boolean("syn").notNull().default(true),
   createdAt: timestamp("created_at").defaultNow().notNull(),
@@ -14,11 +15,11 @@ export const grades = pgTable("grades", {
     .defaultNow()
     .$onUpdate(() => new Date()),
   status: boolean("status").default(false),
-  level: varchar("level", { length: 60 }).notNull(),
+  userId: varchar("user_id").references(() => users.id),
 });
 
-export type Grades = InferSelectModel<typeof grades>;
+export type Parents = InferSelectModel<typeof parents>;
 
-export const gradesRelation = relations(grades, ({ many }) => ({
-  classes: many(classes),
+export const parentsRelations = relations(parents, ({ many }) => ({
+  students: many(students),
 }));

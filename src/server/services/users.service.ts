@@ -97,7 +97,7 @@ export class UsersService {
     }
   }
 
-  async updateUser(data: z.infer<typeof UsersSchema>) {
+  async updateUser(data: z.infer<typeof UsersSchema> & { id: string }) {
     try {
       // Update the user and type-cast to handle optional password
       const user = (await this.repo.update(data)) as Users;
@@ -112,10 +112,10 @@ export class UsersService {
     }
   }
 
-  async getTeachers(take: number, page: number) {
+  async getUsers(take: number, page: number, type: string, cid: string) {
     // Basic validation for limit and offset
     try {
-      return await this.repo.getTeachers(take, take * (page - 1));
+      return await this.repo.getUsers(take, take * (page - 1), type, cid);
     } catch (error) {
       throw new ExpectationFailedException((error as Error).message);
     }

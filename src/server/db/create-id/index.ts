@@ -18,7 +18,7 @@ export const createId = (table: string): string => {
     fs.writeFileSync(file, "{}");
   }
 
-  let tables = JSON.parse(fs.readFileSync(file).toString());
+  const tables = JSON.parse(fs.readFileSync(file).toString());
 
   if (!tables[table]) {
     tables[table] = 0;

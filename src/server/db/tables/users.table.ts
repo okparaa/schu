@@ -1,6 +1,5 @@
-import { InferSelectModel } from "drizzle-orm";
+import { InferSelectModel, relations } from "drizzle-orm";
 import {
-  AnyPgColumn,
   boolean,
   date,
   pgEnum,
@@ -9,8 +8,7 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 import { createId } from "../create-id";
-import { classes } from "./classes.table";
-import { grades } from "./grades.table";
+import { usersRoles } from ".";
 
 export const genderEnum = pgEnum("gender", ["male", "female"]);
 
@@ -37,9 +35,11 @@ export const users = pgTable("users", {
   bloodType: varchar("blood_type"),
   photo: varchar("photo"),
   gender: genderEnum(),
-  parentId: varchar("parent_id").references((): AnyPgColumn => users.id),
-  classId: varchar("class_id").references((): AnyPgColumn => classes.id),
-  gradeId: varchar("grade_id").references((): AnyPgColumn => grades.id),
+  userType: varchar("user_type"),
 });
 
 export type Users = InferSelectModel<typeof users>;
+
+export const usersRelation = relations(users, ({ many }) => ({
+  usersRoles: many(usersRoles),
+}));

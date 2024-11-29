@@ -1,5 +1,4 @@
 import * as z from "zod";
-
 const MAX_FILE_SIZE = 5000000;
 const ACCEPTED_IMAGE_TYPES = [
   "image/jpeg",
@@ -9,7 +8,6 @@ const ACCEPTED_IMAGE_TYPES = [
 ];
 
 export const UsersSchema = z.object({
-  id: z.string(),
   surname: z
     .string({
       required_error: "surname is required",
@@ -58,15 +56,10 @@ export const UsersSchema = z.object({
   dateOfBirth: z.date(),
   address: z.string(),
   gender: z.enum(["male", "female"]),
+  userTypeId: z.string(),
 });
-export const SignupSchema = UsersSchema.omit({ id: true });
-export const SigninSchema = z.object({
-  username: z.string({
-    required_error: "username is required",
-    invalid_type_error: "should be string",
-  }),
-  password: z.string({
-    required_error: "password is required",
-    invalid_type_error: "should be string",
-  }),
+
+export const SigninSchema = UsersSchema.pick({
+  username: true,
+  password: true,
 });

@@ -1,6 +1,7 @@
-import { InferSelectModel } from "drizzle-orm";
+import { InferSelectModel, relations } from "drizzle-orm";
 import { boolean, pgTable, timestamp, varchar } from "drizzle-orm/pg-core";
 import { createId } from "../create-id";
+import { rolesPerms, usersRoles } from ".";
 
 export const roles = pgTable("roles", {
   id: varchar("id", { length: 128 })
@@ -12,8 +13,12 @@ export const roles = pgTable("roles", {
     .defaultNow()
     .$onUpdate(() => new Date()),
   status: boolean("status").default(true),
-  name: varchar("role").notNull().unique(),
+  role: varchar("role").notNull().unique(),
   description: varchar("description").notNull(),
 });
 
 export type Roles = InferSelectModel<typeof roles>;
+export const rolesRelation = relations(roles, ({ many }) => ({
+  usersRoles: many(usersRoles),
+  rolesPerms: many(rolesPerms),
+}));

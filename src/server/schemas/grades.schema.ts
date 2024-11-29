@@ -1,6 +1,5 @@
 import * as z from "zod";
 export const GradesSchema = z.object({
-  id: z.string(),
   level: z.string(),
 });
 

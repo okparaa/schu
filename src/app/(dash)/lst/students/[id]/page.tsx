@@ -13,7 +13,7 @@ const SingleStudentPage = () => {
           <div className="bg-blue-100 py-6 px-4 rounded-md flex-1 flex items-center gap-2">
             <div className="w-1/3 flex justify-center">
               <Image
-                src="https://images.pexels.com/photos/1681010/pexels-photo-1681010.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                src={"/noavatar.png"}
                 alt=""
                 width={144}
                 height={144}
@@ -84,19 +84,34 @@ const SingleStudentPage = () => {
         <div className="p-4 rounded-md bg-white">
           <h1 className="text-lg font-semibold">Shortcuts</h1>
           <div className="mt-4 flex gap-4 flex-wrap text-xs to-gray-500 justify-center">
-            <Link className="p-2 rounded-md bg-pink-300" href="/">
+            <Link
+              className="p-2 rounded-md bg-pink-300"
+              href={`/lst/lessons?cid=${2}`}
+            >
               Student&apos;s Lessons
             </Link>
-            <Link className="p-2 rounded-md bg-purple-300" href="/">
+            <Link
+              className="p-2 rounded-md bg-purple-300"
+              href={`/lst/teachers?cid=${2}`}
+            >
               Student&apos;s Teachers
             </Link>
-            <Link className="p-2 rounded-md bg-green-300" href="/">
+            <Link
+              className="p-2 rounded-md bg-green-300"
+              href={`/lst/results?cid${2}`}
+            >
               Student&apos;s Results
             </Link>
-            <Link className="p-2 rounded-md bg-slate-300" href="/">
+            <Link
+              className="p-2 rounded-md bg-slate-300"
+              href={`/lst/exams?cid=${2}`}
+            >
               Student&apos;s Exams
             </Link>
-            <Link className="p-2 rounded-md bg-stone-300" href="/">
+            <Link
+              className="p-2 rounded-md bg-stone-300"
+              href={`/lst/assignments?cid${2}`}
+            >
               Student&apos;s Assignments
             </Link>
           </div>

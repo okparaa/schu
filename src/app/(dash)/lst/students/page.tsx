@@ -1,11 +1,24 @@
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
-import { role, studentsData } from "@/lib/data";
+import { role } from "@/lib/data";
 import { StudentRow } from "./listRow";
 import FormModal from "@/components/FormModal";
+import { ParamsProps } from "@/types/params";
+import { users } from "@/server/db/tables";
+import { UsersRepository } from "@/server/repository/users.repository";
+import { UsersService } from "@/server/services/users.service";
+import { RequestQuerySchema } from "@/server/schemas/query.schema";
 
-const StudentsListPage = () => {
+const userService = new UsersService(new UsersRepository(users));
+const StudentsListPage = async ({ searchParams }: ParamsProps) => {
+  const param = RequestQuerySchema.parse(await searchParams);
+  const [students, count] = await userService.getUsers(
+    param.t,
+    param.p,
+    "student"
+  );
+  const [total] = count;
   const columns = [
     {
       header: "Info",
@@ -51,9 +64,9 @@ const StudentsListPage = () => {
           </div>
         </div>
       </div>
-      <Table columns={columns} renderRow={StudentRow} data={studentsData} />
+      <Table columns={columns} renderRow={StudentRow} data={students} />
       {/* {renderRow} */}
-      <Pagination />
+      <Pagination page={param.p} total={total.count as number} />
     </div>
   );
 };

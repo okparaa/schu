@@ -14,10 +14,17 @@ import { RequestQuerySchema } from "@/server/schemas/query.schema";
 const userService = new UsersService(new UsersRepository(users));
 
 async function TeachersPage({ searchParams }: ParamsProps) {
-  const result = RequestQuerySchema.parse(await searchParams);
-  const [teachers, count] = await userService.getTeachers(result.t, result.p);
+  const param = RequestQuerySchema.parse(await searchParams);
+
+  const { teachers, total } = await userService.getUsers(
+    param.t,
+    param.p,
+    "teacher",
+    param?.cid as string
+  );
+
   // await seed();
-  const [total] = count;
+  const [count] = total;
   const columns = [
     {
       header: "Info",
@@ -25,7 +32,7 @@ async function TeachersPage({ searchParams }: ParamsProps) {
       className: "pl-4",
     },
     {
-      header: "Staff Id",
+      header: "Teacher ID",
       accessor: "staff_id",
       className: "hidden md:table-cell",
     },
@@ -69,8 +76,8 @@ async function TeachersPage({ searchParams }: ParamsProps) {
         </div>
       </div>
       <Table columns={columns} renderRow={TeacherRow} data={teachers} />
-      {/* {renderRow} */}
-      <Pagination page={result.p} total={total.count as number} />
+
+      <Pagination page={param.p} total={count.total} />
     </div>
   );
 }

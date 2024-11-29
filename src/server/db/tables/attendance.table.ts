@@ -1,8 +1,9 @@
-import { InferSelectModel } from "drizzle-orm";
+import { InferSelectModel, relations } from "drizzle-orm";
 import { boolean, pgTable, timestamp, varchar } from "drizzle-orm/pg-core";
 import { createId } from "../create-id";
 import { users } from "./users.table";
 import { lessons } from "./lessons.table";
+import { students } from "./students.table";
 
 export const attendance = pgTable("attendance", {
   id: varchar("id", { length: 128 })
@@ -26,3 +27,14 @@ export const attendance = pgTable("attendance", {
 });
 
 export type Attendance = InferSelectModel<typeof attendance>;
+
+export const attendanceRelations = relations(attendance, ({ one }) => ({
+  student: one(students, {
+    fields: [attendance.studentId],
+    references: [students.id],
+  }),
+  lesson: one(lessons, {
+    fields: [attendance.studentId],
+    references: [lessons.id],
+  }),
+}));
