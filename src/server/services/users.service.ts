@@ -112,15 +112,6 @@ export class UsersService {
     }
   }
 
-  async getUsers(take: number, page: number, type: string, cid: string) {
-    // Basic validation for limit and offset
-    try {
-      return await this.repo.getUsers(take, take * (page - 1), type, cid);
-    } catch (error) {
-      throw new ExpectationFailedException((error as Error).message);
-    }
-  }
-
   async getUser(id: string) {
     try {
       if (!id) return new BadRequestException("id is required");

@@ -3,6 +3,7 @@ import { boolean, pgTable, timestamp, varchar } from "drizzle-orm/pg-core";
 import { createId } from "../create-id";
 import { users } from "./users.table";
 import { lessons } from "./lessons.table";
+import { classes } from "./classes.table";
 
 export const teachers = pgTable("teachers", {
   id: varchar("id", { length: 128 })
@@ -20,6 +21,11 @@ export const teachers = pgTable("teachers", {
 
 export type Teachers = InferSelectModel<typeof teachers>;
 
-export const teachersRelations = relations(teachers, ({ many }) => ({
+export const teachersRelations = relations(teachers, ({ many, one }) => ({
+  user: one(users, {
+    fields: [teachers.userId],
+    references: [users.id],
+  }),
   lessons: many(lessons),
+  classes: many(classes),
 }));

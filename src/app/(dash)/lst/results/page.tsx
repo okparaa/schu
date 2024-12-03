@@ -1,11 +1,35 @@
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
-import { resultsData, role } from "@/lib/data";
+import { role } from "@/lib/data";
 import { ResultRow } from "./listRow";
 import FormModal from "@/components/FormModal";
+import { ParamsProps } from "@/types/ParamsProps";
+import { results } from "@/server/db/tables";
+import { RequestQuerySchema } from "@/server/schemas/query.schema";
+import { ResultsRepository } from "@/server/repository/results.repository";
+import { ResultsService } from "@/server/services/results.service";
 
-const ResultListPage = () => {
+const resultsService = new ResultsService(new ResultsRepository(results));
+async function ResultListPage({ searchParams }: ParamsProps) {
+  const params = RequestQuerySchema.parse(await searchParams);
+  const [results, count] = await resultsService.getResults(params);
+  const data = results.map((result) => {
+    const assessment = result.assignment || result.exam;
+    if (!assessment) return null;
+    const isExam = "startTime" in assessment;
+    return {
+      id: result.id,
+      title: assessment.title,
+      studentSurname: result.student.user.surname,
+      studentFirstname: result.student.user.firstname,
+      teacherSurname: assessment.lesson.teacher.user.surname,
+      teacherFirstname: assessment.lesson.teacher.user.firstname,
+      score: result.score,
+      className: assessment.lesson.class.name,
+      startTime: isExam ? assessment.startTime : assessment.startDate,
+    };
+  });
   const columns = [
     {
       header: "Subject",
@@ -55,11 +79,11 @@ const ResultListPage = () => {
           </div>
         </div>
       </div>
-      <Table columns={columns} renderRow={ResultRow} data={resultsData} />
+      <Table columns={columns} renderRow={ResultRow} data={data} />
       {/* {renderRow} */}
-      <Pagination />
+      <Pagination page={params.pg} total={count.total} />
     </div>
   );
-};
+}
 
 export default ResultListPage;

@@ -22,7 +22,7 @@ export const announcements = pgTable("announcements", {
 export type Announcements = InferSelectModel<typeof announcements>;
 
 export const announcementsRelations = relations(announcements, ({ one }) => ({
-  classe: one(classes, {
+  class: one(classes, {
     fields: [announcements.classId],
     references: [classes.id],
   }),

@@ -38,6 +38,10 @@ export const studentsRelation = relations(students, ({ one, many }) => ({
     fields: [students.userId],
     references: [users.id],
   }),
+  grade: one(grades, {
+    fields: [students.gradeId],
+    references: [grades.id],
+  }),
   teacher: one(teachers, {
     fields: [students.parentId],
     references: [teachers.id],
@@ -46,8 +50,11 @@ export const studentsRelation = relations(students, ({ one, many }) => ({
     fields: [students.parentId],
     references: [parents.id],
   }),
-  pins: one(pins),
-  classe: one(classes),
+  pins: many(pins),
+  class: one(classes, {
+    fields: [students.classId],
+    references: [classes.id],
+  }),
   attendance: many(attendance),
   results: many(results),
 }));

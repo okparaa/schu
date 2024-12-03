@@ -30,7 +30,7 @@ export const menuItems = [
       },
       {
         visible: ["*"],
-        label: "Lists",
+        label: "Views",
         href: "/lst",
         icon: "icon-stopwatch",
         sub: true,
@@ -76,7 +76,7 @@ export const menuItems = [
       {
         visible: ["*"],
         href: "/",
-        label: "Checklist",
+        label: "Evaluation",
         icon: "icon-light-up",
         sub: true,
         items: [
@@ -120,8 +120,8 @@ export const menuItems = [
       },
       {
         icon: "icon-bullhorn",
-        label: "Announcements",
-        href: "/announcements",
+        label: "Bulletin",
+        href: "/bulletin",
         visible: ["*"],
       },
     ],

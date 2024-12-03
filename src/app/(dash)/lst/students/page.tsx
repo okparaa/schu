@@ -4,26 +4,22 @@ import TableSearch from "@/components/TableSearch";
 import { role } from "@/lib/data";
 import { StudentRow } from "./listRow";
 import FormModal from "@/components/FormModal";
-import { ParamsProps } from "@/types/params";
+import { ParamsProps } from "@/types/ParamsProps";
 import { users } from "@/server/db/tables";
-import { UsersRepository } from "@/server/repository/users.repository";
-import { UsersService } from "@/server/services/users.service";
 import { RequestQuerySchema } from "@/server/schemas/query.schema";
+import { StudentsService } from "@/server/services/students.service";
+import { StudentsRepository } from "@/server/repository/students.repository";
 
-const userService = new UsersService(new UsersRepository(users));
+const studentService = new StudentsService(new StudentsRepository(users));
 const StudentsListPage = async ({ searchParams }: ParamsProps) => {
-  const param = RequestQuerySchema.parse(await searchParams);
-  const [students, count] = await userService.getUsers(
-    param.t,
-    param.p,
-    "student"
-  );
-  const [total] = count;
+  const params = RequestQuerySchema.parse(await searchParams);
+  const [students, count] = await studentService.getStudents(params);
+
   const columns = [
     {
       header: "Info",
       accessor: "info",
-      className: "pl-4",
+      className: "pl-2",
     },
     {
       header: "Student Id",
@@ -66,7 +62,7 @@ const StudentsListPage = async ({ searchParams }: ParamsProps) => {
       </div>
       <Table columns={columns} renderRow={StudentRow} data={students} />
       {/* {renderRow} */}
-      <Pagination page={param.p} total={total.count as number} />
+      <Pagination page={params.pg} total={count.total} />
     </div>
   );
 };

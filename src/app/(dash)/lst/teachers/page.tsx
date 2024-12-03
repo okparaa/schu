@@ -4,32 +4,22 @@ import TableSearch from "@/components/TableSearch";
 import { role } from "@/lib/data";
 import { TeacherRow } from "./listRow";
 import FormModal from "@/components/FormModal";
-import { UsersService } from "@/server/services/users.service";
-import { UsersRepository } from "@/server/repository/users.repository";
 import { users } from "@/server/db/tables";
-import { ParamsProps } from "@/types/params";
+import { ParamsProps } from "@/types/ParamsProps";
 import { RequestQuerySchema } from "@/server/schemas/query.schema";
-// import { seed } from "@/server/db/seed";
-
-const userService = new UsersService(new UsersRepository(users));
+import { TeachersRepository } from "@/server/repository/teachers.repository";
+import { TeachersService } from "@/server/services/teachers.service";
+const teacherService = new TeachersService(new TeachersRepository(users));
 
 async function TeachersPage({ searchParams }: ParamsProps) {
-  const param = RequestQuerySchema.parse(await searchParams);
+  const params = RequestQuerySchema.parse(await searchParams);
+  const [data, count] = await teacherService.getTeachers(params);
 
-  const { teachers, total } = await userService.getUsers(
-    param.t,
-    param.p,
-    "teacher",
-    param?.cid as string
-  );
-
-  // await seed();
-  const [count] = total;
   const columns = [
     {
       header: "Info",
       accessor: "info",
-      className: "pl-4",
+      className: "pl-2",
     },
     {
       header: "Teacher ID",
@@ -37,8 +27,8 @@ async function TeachersPage({ searchParams }: ParamsProps) {
       className: "hidden md:table-cell",
     },
     {
-      header: "Courses",
-      accessor: "courses",
+      header: "Subjects",
+      accessor: "subjects",
       className: "hidden md:table-cell",
     },
     {
@@ -75,9 +65,9 @@ async function TeachersPage({ searchParams }: ParamsProps) {
           </div>
         </div>
       </div>
-      <Table columns={columns} renderRow={TeacherRow} data={teachers} />
+      <Table columns={columns} renderRow={TeacherRow} data={data} />
 
-      <Pagination page={param.p} total={count.total} />
+      <Pagination page={params.pg} total={count.total} />
     </div>
   );
 }

@@ -10,9 +10,10 @@ const Pagination = ({ page, total }: PaginationProps) => {
   const router = useRouter();
   const hasPrev = ITEMS_PER_PAGE * (page - 1) > 0;
   const hasNext = ITEMS_PER_PAGE * (page - 1) + ITEMS_PER_PAGE < total;
+
   const changePage = (newPage: number) => {
     const params = new URLSearchParams(window.location.search);
-    params.set("p", newPage.toString());
+    params.set("pg", newPage.toString());
     router.push(`${window.location.pathname}?${params}`);
   };
   return (

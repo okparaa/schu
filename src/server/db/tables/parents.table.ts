@@ -20,6 +20,10 @@ export const parents = pgTable("parents", {
 
 export type Parents = InferSelectModel<typeof parents>;
 
-export const parentsRelations = relations(parents, ({ many }) => ({
+export const parentsRelations = relations(parents, ({ many, one }) => ({
   students: many(students),
+  user: one(users, {
+    fields: [parents.userId],
+    references: [users.id],
+  }),
 }));

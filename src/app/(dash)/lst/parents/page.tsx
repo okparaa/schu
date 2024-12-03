@@ -1,11 +1,22 @@
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
-import { role, parentsData } from "@/lib/data";
+import { role } from "@/lib/data";
 import { ParentsRow } from "./listRow";
 import FormModal from "@/components/FormModal";
+import { ParamsProps } from "@/types/ParamsProps";
+import { RequestQuerySchema } from "@/server/schemas/query.schema";
+import { ParentsService } from "@/server/services/parents.service";
+import { ParentsRepository } from "@/server/repository/parents.repository";
+import { parents } from "@/server/db/tables";
 
-const ParentsListPage = () => {
+const parentService = new ParentsService(new ParentsRepository(parents));
+async function ParentsListPage({ searchParams }: ParamsProps) {
+  // await seed();
+
+  const params = RequestQuerySchema.parse(await searchParams);
+  const [data, count] = await parentService.getParents(params);
+
   const columns = [
     {
       header: "Info",
@@ -46,11 +57,11 @@ const ParentsListPage = () => {
           </div>
         </div>
       </div>
-      <Table columns={columns} renderRow={ParentsRow} data={parentsData} />
+      <Table columns={columns} renderRow={ParentsRow} data={data} />
       {/* {renderRow} */}
-      <Pagination />
+      <Pagination page={params.pg} total={count.total} />
     </div>
   );
-};
+}
 
 export default ParentsListPage;

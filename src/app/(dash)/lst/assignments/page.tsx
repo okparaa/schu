@@ -1,11 +1,21 @@
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
-import { assignmentsData, role } from "@/lib/data";
+import { role } from "@/lib/data";
 import { AssignmentRow } from "./listRow";
 import FormModal from "@/components/FormModal";
+import { ParamsProps } from "@/types/ParamsProps";
+import { assignments } from "@/server/db/tables";
+import { RequestQuerySchema } from "@/server/schemas/query.schema";
+import { AssignmentsService } from "@/server/services/assignments.service";
+import { AssignmentsRepository } from "@/server/repository/assignments.repository";
 
-const AssignmentsListPage = () => {
+const assignmentsService = new AssignmentsService(
+  new AssignmentsRepository(assignments)
+);
+async function AssignmentsListPage({ searchParams }: ParamsProps) {
+  const params = RequestQuerySchema.parse(await searchParams);
+  const [data, count] = await assignmentsService.getAssignments(params);
   const columns = [
     {
       header: "Subject",
@@ -47,15 +57,11 @@ const AssignmentsListPage = () => {
           </div>
         </div>
       </div>
-      <Table
-        columns={columns}
-        renderRow={AssignmentRow}
-        data={assignmentsData}
-      />
+      <Table columns={columns} renderRow={AssignmentRow} data={data} />
       {/* {renderRow} */}
-      <Pagination />
+      <Pagination page={params.pg} total={count.total} />
     </div>
   );
-};
+}
 
 export default AssignmentsListPage;

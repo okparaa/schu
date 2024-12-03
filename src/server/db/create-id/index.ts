@@ -17,7 +17,6 @@ export const createId = (table: string): string => {
   if (!fs.existsSync(file)) {
     fs.writeFileSync(file, "{}");
   }
-
   const tables = JSON.parse(fs.readFileSync(file).toString());
 
   if (!tables[table]) {

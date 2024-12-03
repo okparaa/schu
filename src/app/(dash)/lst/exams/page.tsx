@@ -1,11 +1,19 @@
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
-import { examsData, role } from "@/lib/data";
+import { role } from "@/lib/data";
 import { ExamRow } from "./listRow";
 import FormModal from "@/components/FormModal";
+import { ParamsProps } from "@/types/ParamsProps";
+import { exams } from "@/server/db/tables";
+import { RequestQuerySchema } from "@/server/schemas/query.schema";
+import { ExamsService } from "@/server/services/exams.service";
+import { ExamsRepository } from "@/server/repository/exams.repository";
 
-const ExamsListPage = () => {
+const examsService = new ExamsService(new ExamsRepository(exams));
+async function ExamsListPage({ searchParams }: ParamsProps) {
+  const params = RequestQuerySchema.parse(await searchParams);
+  const [data, count] = await examsService.getExams(params);
   const columns = [
     {
       header: "Subject",
@@ -45,11 +53,11 @@ const ExamsListPage = () => {
           </div>
         </div>
       </div>
-      <Table columns={columns} renderRow={ExamRow} data={examsData} />
+      <Table columns={columns} renderRow={ExamRow} data={data} />
       {/* {renderRow} */}
-      <Pagination />
+      <Pagination page={params.pg} total={count.total} />
     </div>
   );
-};
+}
 
 export default ExamsListPage;

@@ -1,5 +1,5 @@
 import * as z from "zod";
 export const RolesSchema = z.object({
-  name: z.string(),
+  role: z.string(),
   description: z.string(),
 });

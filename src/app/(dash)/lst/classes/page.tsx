@@ -1,11 +1,19 @@
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
-import { classesData, role } from "@/lib/data";
+import { role } from "@/lib/data";
 import { ClassesRow } from "./listRow";
 import FormModal from "@/components/FormModal";
+import { ParamsProps } from "@/types/ParamsProps";
+import { classes } from "@/server/db/tables";
+import { RequestQuerySchema } from "@/server/schemas/query.schema";
+import { ClassesRepository } from "@/server/repository/classes.repository";
+import { ClassesService } from "@/server/services/classes.service";
 
-const ClassListPage = () => {
+const classesService = new ClassesService(new ClassesRepository(classes));
+async function ClassListPage({ searchParams }: ParamsProps) {
+  const params = RequestQuerySchema.parse(await searchParams);
+  const [data, count] = await classesService.getClasses(params);
   const columns = [
     {
       header: "Class",
@@ -22,8 +30,8 @@ const ClassListPage = () => {
       className: "hidden md:table-cell",
     },
     {
-      header: "Supervisor",
-      accessor: "supervisor",
+      header: "Teacher",
+      accessor: "teacher",
       className: "hidden md:table-cell",
     },
     {
@@ -45,11 +53,11 @@ const ClassListPage = () => {
           </div>
         </div>
       </div>
-      <Table columns={columns} renderRow={ClassesRow} data={classesData} />
+      <Table columns={columns} renderRow={ClassesRow} data={data} />
       {/* {renderRow} */}
-      <Pagination />
+      <Pagination page={params.pg} total={count.total} />
     </div>
   );
-};
+}
 
 export default ClassListPage;

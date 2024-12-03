@@ -1,90 +1,123 @@
-/* eslint-disable @typescript-eslint/no-require-imports */
-
 import { UsersSchema } from "../schemas/users.schema";
 import { generateMock } from "@anatine/zod-mock";
 import {
   classes,
-  classUsers,
-  // classUsers,
   events,
+  exams,
   grades,
   lessons,
+  parents,
   roles,
+  students,
   subjects,
-  userLessons,
-  userRoles,
+  teachers,
   users,
-  userSubjects,
+  usersRoles,
 } from "./tables";
-import { Pool } from "pg";
-import { drizzle } from "drizzle-orm/node-postgres";
+import { db } from ".";
 import { RolesSchema } from "../schemas/roles.schema";
 import { GradesSchema } from "../schemas/grades.schema";
 import { ClassesSchema } from "../schemas/classes.schema";
-import { eq } from "drizzle-orm";
+import { sql } from "drizzle-orm";
 import { SubjectsSchema } from "../schemas/subjects.schema";
 import { LessonsSchema } from "../schemas/lessons.schema";
 import dayjs from "dayjs";
 import { EventsSchema } from "../schemas/events.schema";
-import { UserLessonsSchema } from "../schemas/user_lessons.schema";
-import { ClassUsersSchema } from "../schemas/class_users.schema";
+import { TeachersSchema } from "../schemas/teachers.schema";
+import { StudentsSchema } from "../schemas/students.schema";
+import { ParentsSchema } from "../schemas/parents.schema";
+import { faker } from "@faker-js/faker";
+import { SUBJECTS } from "./constants";
+import { ExamsSchema } from "../schemas/exams.schema";
+export const clearDb = async (): Promise<void> => {
+  const query = sql<string>`SELECT table_name
+      FROM information_schema.tables
+      WHERE table_schema = 'public'
+        AND table_type = 'BASE TABLE';
+    `;
+
+  const tables = await db.execute(query);
+
+  for (const table of tables.rows) {
+    console.log("truncate table: ", table.table_name);
+    const query = sql.raw(`TRUNCATE TABLE ${table.table_name} CASCADE;`);
+    await db.execute(query);
+  }
+};
 
 export async function seed() {
-  const client = new Pool({
-    connectionString: process.env.DATABASE_URL,
-  });
-  const db = drizzle(client);
-  const teachersData: (typeof users.$inferInsert)[] = [];
-  const studentsData: (typeof users.$inferInsert)[] = [];
-  const parentsData: (typeof users.$inferInsert)[] = [];
+  try {
+    await clearDb();
+  } catch (err) {
+    console.log(err);
+  }
+
+  const usersData: (typeof users.$inferInsert)[] = [];
+  const teachersData: (typeof teachers.$inferInsert)[] = [];
+  const studentsData: (typeof students.$inferInsert)[] = [];
+  const parentsData: (typeof parents.$inferInsert)[] = [];
   const rolesData: (typeof roles.$inferInsert)[] = [];
-  const adminsData: (typeof users.$inferInsert)[] = [];
-  const userRolesData: (typeof userRoles.$inferInsert)[] = [];
+  const usersRolesData: (typeof usersRoles.$inferInsert)[] = [];
   const gradesData: (typeof grades.$inferInsert)[] = [];
   const classData: (typeof classes.$inferInsert)[] = [];
   const subjectsData: (typeof subjects.$inferInsert)[] = [];
   const lessonsData: (typeof lessons.$inferInsert)[] = [];
-  const userSubjectsData: (typeof userSubjects.$inferInsert)[] = [];
-  const userLessonsData: (typeof userLessons.$inferInsert)[] = [];
-  const classUsersData: (typeof classUsers.$inferInsert)[] = [];
   const eventsData: (typeof events.$inferInsert)[] = [];
-
-  const teacherRole = { ...generateMock(RolesSchema), role: "teacher" };
-  const [teacherRol] = await db.insert(roles).values(teacherRole).returning();
-  rolesData.push(teacherRol);
-
-  const studentRole = { ...generateMock(RolesSchema), role: "student" };
-  const [studentRol] = await db.insert(roles).values(studentRole).returning();
-  rolesData.push(studentRol);
-
-  const parentRole = { ...generateMock(RolesSchema), role: "parent" };
-  const [parentRol] = await db.insert(roles).values(parentRole).returning();
-  rolesData.push(parentRol);
-
-  const adminRole = { ...generateMock(RolesSchema), role: "admin" };
-  const [adminRol] = await db.insert(roles).values(adminRole).returning();
-  rolesData.push(adminRol);
+  const examsData: (typeof exams.$inferInsert)[] = [];
+  // const announcementsData: (typeof announcements.$inferInsert)[] = [];
 
   const chars = "ABCD";
+  const ROLES = ["student", "teacher", "parent", "admin", "agent", "prop"];
 
-  for (let i = 0; i < 13; i++) {
+  console.log("seeding table: roles");
+  for (let i = 0; i < ROLES.length; i++) {
+    const role = generateMock(RolesSchema);
+    role.role = ROLES[i];
+    const [rol] = await db.insert(roles).values(role).returning();
+    rolesData.push(rol);
+  }
+
+  console.log("seeding table: subjects");
+  for (let i = 0; i < SUBJECTS.length; i++) {
     const subject = generateMock(SubjectsSchema);
+    subject.name = SUBJECTS[i];
     const [sub] = await db.insert(subjects).values(subject).returning();
     subjectsData.push(sub);
   }
 
+  console.log("seeding table: teachers/users");
+  const teacherRoleId = rolesData.find((role) => role.role == "teacher")?.id;
   for (let i = 0; i < 30; i++) {
-    const user = generateMock(UsersSchema);
-    const [usr] = await db.insert(users).values(user).returning();
-    userSubjectsData.push({
-      subjectId: subjectsData[i % 13].id as string,
-      userId: usr.id,
+    const firstname = faker.person.firstName();
+    const lastname = faker.person.lastName();
+    const surname = faker.person.middleName();
+    const user = generateMock(UsersSchema, {
+      stringMap: {
+        firstname: () => firstname,
+        lastname: () => lastname,
+        surname: () => surname,
+        address: () => faker.location.streetAddress(),
+        description: () => faker.lorem.sentence(),
+        email: () =>
+          faker.internet
+            .email({ firstName: firstname, lastName: lastname })
+            .toLowerCase(),
+        username: () =>
+          faker.internet.displayName({
+            firstName: firstname,
+            lastName: lastname,
+          }),
+      },
     });
-    teachersData.push(usr);
-    userRolesData.push({
-      roleId: teacherRol.id,
+    const teacher = generateMock(TeachersSchema);
+    const [usr] = await db.insert(users).values(user).returning();
+    usersData.push(usr);
+    teacher.userId = usr.id;
+    const [tcher] = await db.insert(teachers).values(teacher).returning();
+    teachersData.push(tcher);
+    usersRolesData.push({
+      roleId: teacherRoleId as string,
       userId: usr.id,
-      userType: "teacher",
     });
   }
   const days = [
@@ -97,51 +130,99 @@ export async function seed() {
     "SUNDAY",
   ];
 
-  for (let i = 0; i < 5; i++) {
-    const user = generateMock(UsersSchema);
-    const [usr] = await db.insert(users).values(user).returning();
-    adminsData.push(usr);
-    userRolesData.push({
-      roleId: adminRol.id,
-      userId: usr.id,
-      userType: "admin",
-    });
-  }
+  console.log("seeding table: parents/users");
+  const parentRoleId = rolesData.find((role) => role.role == "parent")?.id;
   for (let i = 0; i < 30; i++) {
-    const user = generateMock(UsersSchema);
-    const [usr] = await db.insert(users).values(user).returning();
-    studentsData.push(usr);
-    userRolesData.push({
-      roleId: studentRol.id,
-      userId: usr.id,
-      userType: "student",
+    const firstname = faker.person.firstName();
+    const lastname = faker.person.lastName();
+    const surname = faker.person.middleName();
+    const user = generateMock(UsersSchema, {
+      stringMap: {
+        firstname: () => firstname,
+        lastname: () => lastname,
+        surname: () => surname,
+        address: () => faker.location.streetAddress(),
+        username: () =>
+          faker.internet.displayName({
+            firstName: firstname,
+            lastName: lastname,
+          }),
+        description: () => faker.lorem.sentence(),
+        email: () =>
+          faker.internet
+            .email({ firstName: firstname, lastName: lastname })
+            .toLowerCase(),
+      },
     });
-  }
-  for (let i = 0; i < 30; i++) {
-    const user = generateMock(UsersSchema);
+    const parent = generateMock(ParentsSchema);
     const [usr] = await db.insert(users).values(user).returning();
-    parentsData.push(usr);
-    userRolesData.push({
-      roleId: parentRol.id,
+    usersData.push(usr);
+    parent.userId = usr.id;
+    const [paren] = await db.insert(parents).values(parent).returning();
+    parentsData.push(paren);
+    usersRolesData.push({
+      roleId: parentRoleId as string,
       userId: usr.id,
-      userType: "parent",
     });
   }
 
+  let cnt = 0;
+  console.log("seeding table: classes and grades");
   for (let k = 1; k <= 6; k++) {
     const grade = generateMock(GradesSchema);
     grade.level = String(k);
     const [grad] = await db.insert(grades).values(grade).returning();
     gradesData.push(grad);
-    for (let m = 0; m < 2; m++) {
+    for (let m = 0; m < 3; m++) {
       const classs = generateMock(ClassesSchema);
       classs.name = grade.level + chars[m];
-      classs.teacherId = teachersData[2 * k + m - 1].id as string;
+      classs.gradeId = grad.id;
+      classs.teacherId = teachersData[cnt++].id as string;
       const [clazz] = await db.insert(classes).values(classs).returning();
       classData.push(clazz);
     }
   }
 
+  console.log("seeding table: students update");
+  const studentRoleId = rolesData.find((role) => role.role == "student")?.id;
+  for (let i = 0; i < 30; i++) {
+    const firstname = faker.person.firstName();
+    const lastname = faker.person.lastName();
+    const surname = faker.person.middleName();
+    const user = generateMock(UsersSchema, {
+      stringMap: {
+        firstname: () => firstname,
+        lastname: () => lastname,
+        address: () => faker.location.streetAddress(),
+        surname: () => surname,
+        username: () =>
+          faker.internet.displayName({
+            firstName: firstname,
+            lastName: lastname,
+          }),
+        description: () => faker.lorem.sentence(),
+        email: () =>
+          faker.internet
+            .email({ firstName: firstname, lastName: lastname })
+            .toLowerCase(),
+      },
+    });
+    const student = generateMock(StudentsSchema);
+    const [usr] = await db.insert(users).values(user).returning();
+    student.userId = usr.id;
+    student.parentId = parentsData[i].id as string;
+    student.classId = classData[i % 12].id as string;
+    student.gradeId = gradesData[i % 6].id as string;
+    usersData.push(usr);
+
+    const [std] = await db.insert(students).values(student).returning();
+    studentsData.push(std);
+    usersRolesData.push({
+      roleId: studentRoleId as string,
+      userId: usr.id,
+    });
+  }
+  console.log("seeding table: events");
   for (let i = 0; i < 6; i++) {
     const event = generateMock(EventsSchema);
     event.classId = classData[i].id as string;
@@ -150,43 +231,43 @@ export async function seed() {
     const [evt] = await db.insert(events).values(event).returning();
     eventsData.push(evt);
   }
+  // console.log("seeding table: students update");
+  //   for (let i = 0; i < parentsData.length; i++) {
+  //     studentsData[i].parentId = parentsData[i].id;
+  //     studentsData[i].gradeId = gradesData[i % 6].id;
+  //     studentsData[i].classId = classData[i % 12].id;
+  //     await db
+  //       .update(users)
+  //       .set({ ...studentsData[i] })
+  //       .where(eq(users.id, studentsData[i].id as string));
+  //   }
 
-  for (let i = 0; i < parentsData.length; i++) {
-    studentsData[i].parentId = parentsData[i].id;
-    studentsData[i].gradeId = gradesData[i % 6].id;
-    studentsData[i].classId = classData[i % 12].id;
-    await db
-      .update(users)
-      .set({ ...studentsData[i] })
-      .where(eq(users.id, studentsData[i].id as string));
-  }
-
-  for (let i = 0; i < 13; i++) {
+  console.log("seeding table: lessons");
+  for (let i = 0; i < 50; i++) {
     const lesson = generateMock(LessonsSchema);
-    const userLesson = generateMock(UserLessonsSchema);
-    const classUser = generateMock(ClassUsersSchema);
     lesson.day = days[i % 7];
     lesson.startTime = dayjs().day(i).hour(2).toDate();
     lesson.endTime = dayjs().day(i).hour(3).toDate();
-    lesson.teacherId = teachersData[i].id as string;
+    lesson.teacherId = teachersData[i % 30].id as string;
     lesson.classId = classData[i % 12].id as string;
-    lesson.subjectId = subjectsData[i].id as string;
+    lesson.subjectId = subjectsData[i % SUBJECTS.length].id as string;
     const [lessn] = await db.insert(lessons).values(lesson).returning();
-
-    userLesson.userId = teachersData[i].id as string;
-    userLesson.lessonId = lessn.id;
-    userLessonsData.push(userLesson);
-
-    classUser.userId = teachersData[i].id as string;
-    classUser.classId = classData[i % 12].id as string;
-    classUsersData.push(classUser);
-
     lessonsData.push(lessn);
   }
 
-  await db.insert(classUsers).values(classUsersData);
-  await db.insert(userLessons).values(userLessonsData);
-  await db.insert(userSubjects).values(userSubjectsData);
-  await db.insert(userRoles).values(userRolesData);
-  console.log("Seed done");
+  console.log("seeding table: exams");
+  for (let i = 0; i < 40; i++) {
+    const exam = generateMock(ExamsSchema);
+    exam.lessonId = lessonsData[i].id as string;
+    exam.startTime = dayjs().day(i).hour(3).toDate();
+    exam.endTime = dayjs().day(i).hour(4).toDate();
+    const [exm] = await db.insert(exams).values(exam).returning();
+    examsData.push(exm);
+  }
+  await db.insert(usersRoles).values(usersRolesData);
 }
+
+seed().catch((err) => {
+  console.log(err);
+  process.exit(1);
+});

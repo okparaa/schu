@@ -11,7 +11,7 @@
     "test:watch": "jest --watchAll",
     "gen": "drizzle-kit generate",
     "mig": "node src/server/db/migrate.ts",
-    "seed": "ts-node src/server/db/seed.ts",
+    "seed": "tsx src/server/db/seed.ts",
     "db": "npx drizzle-kit studio"
   },
   "dependencies": {
@@ -41,7 +41,6 @@
     "@types/pg": "^8.11.10",
     "@types/react": "18.3.12",
     "drizzle-kit": "^0.28.1",
-    "esbuild-register": "^3.6.0",
     "eslint": "^8",
     "eslint-config-next": "15.0.1",
     "jest": "^29.7.0",

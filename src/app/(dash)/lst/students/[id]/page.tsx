@@ -1,11 +1,19 @@
 import Announcements from "@/components/Announcements";
+import FormModal from "@/components/FormModal";
 import Metrics from "@/components/Metrics";
 import BigCalendar from "@/components/plugins/BigCalendar";
 import { calendarEvents } from "@/lib/data";
+import { students } from "@/server/db/tables";
+import { StudentsRepository } from "@/server/repository/students.repository";
+import { StudentsService } from "@/server/services/students.service";
+import { ParamsProps } from "@/types/ParamsProps";
 import Image from "next/image";
 import Link from "next/link";
 
-const SingleStudentPage = () => {
+const studentsService = new StudentsService(new StudentsRepository(students));
+async function SingleStudentPage({ params }: ParamsProps) {
+  const id = (await params).id;
+  const student = await studentsService.getStudent(id as string);
   return (
     <div className="flex flex-col p-2 flex-1 xl:flex-row gap-2">
       <div className="w-full xl:w-2/3">
@@ -13,7 +21,7 @@ const SingleStudentPage = () => {
           <div className="bg-blue-100 py-6 px-4 rounded-md flex-1 flex items-center gap-2">
             <div className="w-1/3 flex justify-center">
               <Image
-                src={"/noavatar.png"}
+                src={student?.user?.photo || "/noavatar.png"}
                 alt=""
                 width={144}
                 height={144}
@@ -21,9 +29,14 @@ const SingleStudentPage = () => {
               />
             </div>
             <div className="w-2/3 flex flex-col justify-between gap-2">
-              <h1 className="text-xl font-semibold">Emeka Chinedu</h1>
+              <div className="flex justify-between">
+                <h1 className="text-xl font-semibold">
+                  {student?.user?.surname} {student?.user?.firstname}
+                </h1>
+                <FormModal table="student" type="update" data={student} />
+              </div>
               <p className="text-sm to-gray-500">
-                Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+                {student?.user?.description}
               </p>
               <div className="flex justify-between items-center gap-2 flex-wrap text-xs font-medium">
                 <div className="w-full md:w-1/3 flex items-center gap-2 lg:w-full">
@@ -86,31 +99,31 @@ const SingleStudentPage = () => {
           <div className="mt-4 flex gap-4 flex-wrap text-xs to-gray-500 justify-center">
             <Link
               className="p-2 rounded-md bg-pink-300"
-              href={`/lst/lessons?cid=${2}`}
+              href={`/lst/lessons?std=${id}`}
             >
               Student&apos;s Lessons
             </Link>
             <Link
               className="p-2 rounded-md bg-purple-300"
-              href={`/lst/teachers?cid=${2}`}
+              href={`/lst/teachers?std=${id}`}
             >
               Student&apos;s Teachers
             </Link>
             <Link
               className="p-2 rounded-md bg-green-300"
-              href={`/lst/results?cid${2}`}
+              href={`/lst/results?std=${id}`}
             >
               Student&apos;s Results
             </Link>
             <Link
               className="p-2 rounded-md bg-slate-300"
-              href={`/lst/exams?cid=${2}`}
+              href={`/lst/exams?std=${id}`}
             >
               Student&apos;s Exams
             </Link>
             <Link
               className="p-2 rounded-md bg-stone-300"
-              href={`/lst/assignments?cid${2}`}
+              href={`/lst/assignments?std=${id}`}
             >
               Student&apos;s Assignments
             </Link>
@@ -121,6 +134,6 @@ const SingleStudentPage = () => {
       </div>
     </div>
   );
-};
+}
 
 export default SingleStudentPage;

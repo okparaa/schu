@@ -2,6 +2,7 @@ import { InferSelectModel, relations } from "drizzle-orm";
 import { boolean, pgTable, timestamp, varchar } from "drizzle-orm/pg-core";
 import { createId } from "../create-id";
 import { classes } from "./classes.table";
+import { students } from "./students.table";
 
 export const grades = pgTable("grades", {
   id: varchar("id", { length: 128 })
@@ -21,4 +22,5 @@ export type Grades = InferSelectModel<typeof grades>;
 
 export const gradesRelation = relations(grades, ({ many }) => ({
   classes: many(classes),
+  students: many(students),
 }));

@@ -8,7 +8,7 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 import { createId } from "../create-id";
-import { usersRoles } from ".";
+import { parents, sessions, students, teachers, usersRoles } from ".";
 
 export const genderEnum = pgEnum("gender", ["male", "female"]);
 
@@ -36,10 +36,15 @@ export const users = pgTable("users", {
   photo: varchar("photo"),
   gender: genderEnum(),
   userType: varchar("user_type"),
+  description: varchar("description"),
 });
 
 export type Users = InferSelectModel<typeof users>;
 
-export const usersRelation = relations(users, ({ many }) => ({
+export const usersRelation = relations(users, ({ many, one }) => ({
   usersRoles: many(usersRoles),
+  sessions: many(sessions),
+  teacher: one(teachers),
+  student: one(students),
+  parent: one(parents),
 }));

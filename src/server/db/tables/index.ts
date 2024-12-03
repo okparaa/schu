@@ -15,6 +15,6 @@ export * from "./pins.table";
 export * from "./roles.table";
 export * from "./sessions.table";
 export * from "./perms.table";
-export * from "./user_roles.table";
+export * from "./users_roles.table";
 export * from "./role_perms.table";
 export * from "./subjects.table";

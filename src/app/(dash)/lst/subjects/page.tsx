@@ -1,16 +1,24 @@
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
-import { role, subjectsData } from "@/lib/data";
+import { role } from "@/lib/data";
 import { SubjectRow } from "./listRow";
 import FormModal from "@/components/FormModal";
+import { ParamsProps } from "@/types/ParamsProps";
+import { RequestQuerySchema } from "@/server/schemas/query.schema";
+import { subjects } from "@/server/db/tables";
+import { SubjectsService } from "@/server/services/subjects.service";
+import { SubjectsRepository } from "@/server/repository/subjects.repository";
 
-const SubjectListPage = () => {
+const subjectService = new SubjectsService(new SubjectsRepository(subjects));
+async function SubjectListPage({ searchParams }: ParamsProps) {
+  const params = RequestQuerySchema.parse(await searchParams);
+  const [data, count] = await subjectService.getSubjects(params);
   const columns = [
     {
       header: "Subject Name",
       accessor: "name",
-      className: "pl-4",
+      className: "pl-2",
     },
     {
       header: "Teachers",
@@ -36,11 +44,11 @@ const SubjectListPage = () => {
           </div>
         </div>
       </div>
-      <Table columns={columns} renderRow={SubjectRow} data={subjectsData} />
+      <Table columns={columns} renderRow={SubjectRow} data={data} />
       {/* {renderRow} */}
-      <Pagination />
+      <Pagination page={params.pg} total={count.total} />
     </div>
   );
-};
+}
 
 export default SubjectListPage;

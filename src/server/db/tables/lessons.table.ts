@@ -7,7 +7,7 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 import { createId } from "../create-id";
-import { assignments, attendance, classes, exams, subjects, users } from ".";
+import { assignments, attendance, classes, exams, subjects, teachers } from ".";
 
 export const DaysEnum = pgEnum("days", [
   "MONDAY",
@@ -36,22 +36,22 @@ export const lessons = pgTable("lessons", {
   endTime: timestamp("end_time"),
   subjectId: varchar("subject_id").references(() => subjects.id),
   classId: varchar("class_id").references(() => classes.id),
-  teacherId: varchar("user_id").references(() => users.id),
+  teacherId: varchar("user_id").references(() => teachers.id),
 });
 
 export type Lessons = InferSelectModel<typeof lessons>;
 
 export const lessonsRelation = relations(lessons, ({ one, many }) => ({
-  classe: one(classes, {
+  class: one(classes, {
     fields: [lessons.classId],
     references: [classes.id],
   }),
-  teacher: one(users, {
+  teacher: one(teachers, {
     fields: [lessons.teacherId],
-    references: [users.id],
+    references: [teachers.id],
   }),
   subject: one(subjects, {
-    fields: [lessons.teacherId],
+    fields: [lessons.subjectId],
     references: [subjects.id],
   }),
   exams: many(exams),

@@ -1,11 +1,10 @@
 import FormModal from "@/components/FormModal";
-import { Classes, Subjects, Users } from "@/server/db/tables";
 import { role } from "@/lib/data";
 import Image from "next/image";
 import Link from "next/link";
-type TeacherList = Users & { subjects: Subjects[] } & { classes: Classes[] };
+import { TeacherList } from "@/types/TeacherList";
 export const TeacherRow = (row: TeacherList) => {
-  console.log(row.classes, row.subjects);
+  // console.log(row);
 
   return (
     <tr
@@ -14,36 +13,41 @@ export const TeacherRow = (row: TeacherList) => {
     >
       <td className="flex gap-2 p-2">
         <Image
-          src={row.photo || "/noavatar.png"}
+          src={row.user.photo || "/noavatar.png"}
           alt=""
           height={40}
           width={40}
           className="w-10 h-10 rounded-full object-cover"
         />
-        <Link className="underline" href={`/lst/teachers/${row.id}`}>
-          <div className="flex flex-col">
+        <div className="flex flex-col">
+          <Link className="underline" href={`/lst/teachers/${row.id}`}>
             <h1 className="font-semibold">
-              {row.surname} {row.firstname}
+              {row.user.surname} {row.user.lastname}
             </h1>
-            <p className="text-xs text-gray-500">{row.email}</p>
-          </div>
-        </Link>
+          </Link>
+          <p className="text-xs text-gray-500">{row.user.email}</p>
+        </div>
       </td>
-      <td className="hidden md:table-cell">{row.username}</td>
+      <td className="hidden md:table-cell">{row.user.username}</td>
       <td className="hidden md:table-cell">
-        {row?.subjects?.reduce(
-          (res, str) => (str ? res + str.name + "," : res),
-          ""
-        )}
+        {row?.lessons
+          .reduce(
+            (str, lesson) =>
+              lesson.subject ? str + lesson.subject.name + ", " : str,
+            ""
+          )
+          .replace(/,+\W+$/, "")}
       </td>
       <td className="hidden md:table-cell">
-        {row?.classes?.reduce(
-          (res, str) => (str ? res + str.name + "," : res),
-          ""
-        )}
+        {row.classes
+          ?.reduce(
+            (str, clazz) => (clazz.name ? str + clazz.name + " , " : str),
+            ""
+          )
+          .replace(/,+\W+$/, "")}
       </td>
-      <td className="hidden lg:table-cell">{row.phone}</td>
-      <td className="hidden lg:table-cell">{row.address}</td>
+      <td className="hidden lg:table-cell">{row.user.phone}</td>
+      <td className="hidden lg:table-cell">{row.user.address}</td>
       <td className="w-32">
         <div className="flex items-center justify-center gap-3">
           {role == "admin" && (

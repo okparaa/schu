@@ -56,7 +56,8 @@ export const UsersSchema = z.object({
   dateOfBirth: z.date(),
   address: z.string(),
   gender: z.enum(["male", "female"]),
-  userTypeId: z.string(),
+  userType: z.string(),
+  description: z.string(),
 });
 
 export const SigninSchema = UsersSchema.pick({
