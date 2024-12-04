@@ -1,7 +1,7 @@
 import { count, inArray, eq, SQL, and, ilike, or } from "drizzle-orm";
 import { Repository } from ".";
 import { NotProvidedException } from "@/server/exceptions/notProvided.exception";
-import { classes, lessons, students, teachers, users } from "../db/tables";
+import { classes, students, teachers, users } from "../db/tables";
 import { ExpectationFailedException } from "@/server/exceptions/expectationFailed.exception";
 import { TeacherList } from "@/types/TeacherList";
 import { RequestQueryType } from "../schemas/query.schema";
@@ -36,9 +36,8 @@ export class TeachersRepository extends Repository {
                 inArray(
                   teachers.id,
                   this.db
-                    .select({ id: lessons.teacherId })
-                    .from(lessons)
-                    .innerJoin(classes, eq(classes.id, lessons.classId))
+                    .select({ id: classes.teacherId })
+                    .from(classes)
                     .where(eq(classes.id, params.cid as string))
                 )
               );
@@ -48,9 +47,8 @@ export class TeachersRepository extends Repository {
                 inArray(
                   teachers.id,
                   this.db
-                    .select({ id: lessons.teacherId })
-                    .from(lessons)
-                    .innerJoin(classes, eq(classes.id, lessons.classId))
+                    .select({ id: classes.teacherId })
+                    .from(classes)
                     .leftJoin(students, eq(students.classId, classes.id))
                     .where(eq(students.id, params.std as string))
                 )

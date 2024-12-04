@@ -4,22 +4,12 @@ import { NotProvidedException } from "@/server/exceptions/notProvided.exception"
 
 import { ExpectationFailedException } from "@/server/exceptions/expectationFailed.exception";
 import { RequestQueryType } from "../schemas/query.schema";
-import {
-  assignments,
-  classes,
-  lessons,
-  students,
-  teachers,
-} from "../db/tables";
-import { AssignmentList } from "@/types/AssignmentList";
+import { ExamList } from "@/types/ExamList";
+import { classes, bulletins, lessons, students, teachers } from "../db/tables";
 
-export class AssignmentsRepository extends Repository {
+export class BulletinsRepository extends Repository {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async getAssignments(
-    limit: number,
-    offset: number,
-    params: RequestQueryType
-  ) {
+  async getBulletins(limit: number, offset: number, params: RequestQueryType) {
     if (!limit) {
       throw new NotProvidedException("limit is required");
     }
@@ -31,11 +21,11 @@ export class AssignmentsRepository extends Repository {
             case "tid":
               query.push(
                 inArray(
-                  assignments.lessonId,
+                  bulletins.classId,
                   this.db
-                    .select({ id: lessons.id })
-                    .from(lessons)
-                    .innerJoin(teachers, eq(teachers.id, lessons.teacherId))
+                    .select({ id: classes.id })
+                    .from(classes)
+                    .innerJoin(teachers, eq(teachers.id, classes.teacherId))
                     .where(eq(teachers.id, params.tid as string))
                 )
               );
@@ -43,10 +33,10 @@ export class AssignmentsRepository extends Repository {
             case "std":
               query.push(
                 inArray(
-                  assignments.lessonId,
+                  bulletins.classId,
                   this.db
-                    .select({ id: lessons.id })
-                    .from(lessons)
+                    .select({ id: classes.id })
+                    .from(classes)
                     .innerJoin(classes, eq(classes.id, lessons.classId))
                     .leftJoin(students, eq(students.classId, classes.id))
                     .where(eq(students.id, params.std as string))
@@ -56,15 +46,12 @@ export class AssignmentsRepository extends Repository {
             case "sach":
               query.push(
                 inArray(
-                  assignments.lessonId,
+                  bulletins.classId,
                   this.db
-                    .select({ id: lessons.id })
-                    .from(lessons)
-                    .innerJoin(
-                      assignments,
-                      eq(lessons.id, assignments.lessonId)
-                    )
-                    .where(ilike(assignments.title, "%" + params.sach + "%"))
+                    .select({ id: classes.id })
+                    .from(classes)
+                    .innerJoin(bulletins, eq(bulletins.classId, classes.id))
+                    .where(ilike(bulletins.title, "%" + params.sach + "%"))
                 )
               );
               break;
@@ -77,33 +64,20 @@ export class AssignmentsRepository extends Repository {
     }
     try {
       return await this.db.transaction(async (tx) => {
-        const results = await tx.query.assignments.findMany({
+        const results = await tx.query.bulletins.findMany({
           limit,
           offset,
           where: or(...query),
           with: {
-            lesson: {
-              with: {
-                class: true,
-                teacher: {
-                  with: {
-                    user: true,
-                  },
-                },
-                subject: true,
-              },
-            },
+            class: true,
           },
         });
 
         const [total] = await tx
           .select({ total: count() })
-          .from(assignments)
+          .from(bulletins)
           .where(or(...query));
-        return [results, total] as unknown as [
-          AssignmentList[],
-          { total: number }
-        ];
+        return [results, total] as unknown as [ExamList[], { total: number }];
       });
     } catch (error) {
       throw new ExpectationFailedException((error as Error).message);

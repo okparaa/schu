@@ -4,22 +4,12 @@ import { NotProvidedException } from "@/server/exceptions/notProvided.exception"
 
 import { ExpectationFailedException } from "@/server/exceptions/expectationFailed.exception";
 import { RequestQueryType } from "../schemas/query.schema";
-import {
-  assignments,
-  classes,
-  lessons,
-  students,
-  teachers,
-} from "../db/tables";
-import { AssignmentList } from "@/types/AssignmentList";
+import { EventList } from "@/types/EventList";
+import { classes, events, students, teachers } from "../db/tables";
 
-export class AssignmentsRepository extends Repository {
+export class EventsRepository extends Repository {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async getAssignments(
-    limit: number,
-    offset: number,
-    params: RequestQueryType
-  ) {
+  async getEvents(limit: number, offset: number, params: RequestQueryType) {
     if (!limit) {
       throw new NotProvidedException("limit is required");
     }
@@ -31,11 +21,11 @@ export class AssignmentsRepository extends Repository {
             case "tid":
               query.push(
                 inArray(
-                  assignments.lessonId,
+                  events.classId,
                   this.db
-                    .select({ id: lessons.id })
-                    .from(lessons)
-                    .innerJoin(teachers, eq(teachers.id, lessons.teacherId))
+                    .select({ id: classes.id })
+                    .from(classes)
+                    .innerJoin(teachers, eq(teachers.id, classes.teacherId))
                     .where(eq(teachers.id, params.tid as string))
                 )
               );
@@ -43,28 +33,24 @@ export class AssignmentsRepository extends Repository {
             case "std":
               query.push(
                 inArray(
-                  assignments.lessonId,
+                  events.classId,
                   this.db
-                    .select({ id: lessons.id })
-                    .from(lessons)
-                    .innerJoin(classes, eq(classes.id, lessons.classId))
-                    .leftJoin(students, eq(students.classId, classes.id))
+                    .select({ id: classes.id })
+                    .from(classes)
+                    .innerJoin(students, eq(students.classId, classes.id))
                     .where(eq(students.id, params.std as string))
                 )
               );
               break;
             case "sach":
+              query.push(ilike(events.title, "%" + params.sach + "%"));
               query.push(
                 inArray(
-                  assignments.lessonId,
+                  events.classId,
                   this.db
-                    .select({ id: lessons.id })
-                    .from(lessons)
-                    .innerJoin(
-                      assignments,
-                      eq(lessons.id, assignments.lessonId)
-                    )
-                    .where(ilike(assignments.title, "%" + params.sach + "%"))
+                    .select({ id: classes.id })
+                    .from(classes)
+                    .where(ilike(classes.name, "%" + params.sach + "%"))
                 )
               );
               break;
@@ -77,20 +63,23 @@ export class AssignmentsRepository extends Repository {
     }
     try {
       return await this.db.transaction(async (tx) => {
-        const results = await tx.query.assignments.findMany({
+        const results = await tx.query.events.findMany({
           limit,
           offset,
           where: or(...query),
           with: {
-            lesson: {
+            class: {
               with: {
-                class: true,
+                students: {
+                  with: {
+                    user: true,
+                  },
+                },
                 teacher: {
                   with: {
                     user: true,
                   },
                 },
-                subject: true,
               },
             },
           },
@@ -98,12 +87,9 @@ export class AssignmentsRepository extends Repository {
 
         const [total] = await tx
           .select({ total: count() })
-          .from(assignments)
+          .from(events)
           .where(or(...query));
-        return [results, total] as unknown as [
-          AssignmentList[],
-          { total: number }
-        ];
+        return [results, total] as unknown as [EventList[], { total: number }];
       });
     } catch (error) {
       throw new ExpectationFailedException((error as Error).message);

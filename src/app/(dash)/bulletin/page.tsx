@@ -1,11 +1,21 @@
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
-import { announcementsData, role } from "@/lib/data";
-import { AnnouncementRow } from "./listRow";
+import { role } from "@/lib/data";
+import { BulletinRow } from "./listRow";
 import FormModal from "@/components/FormModal";
+import { ParamsProps } from "@/types/ParamsProps";
+import { bulletins } from "@/server/db/tables";
+import { RequestQuerySchema } from "@/server/schemas/query.schema";
+import { BulletinsRepository } from "@/server/repository/bulletins.repository";
+import { BulletinsService } from "@/server/services/bulletins.service";
 
-const AnnouncementsListPage = () => {
+const bulletinsService = new BulletinsService(
+  new BulletinsRepository(bulletins)
+);
+async function BulletinsListPage({ searchParams }: ParamsProps) {
+  const params = RequestQuerySchema.parse(await searchParams);
+  const [data, count] = await bulletinsService.getBulletins(params);
   const columns = [
     {
       header: "Title",
@@ -44,15 +54,11 @@ const AnnouncementsListPage = () => {
           </div>
         </div>
       </div>
-      <Table
-        columns={columns}
-        renderRow={AnnouncementRow}
-        data={announcementsData}
-      />
+      <Table columns={columns} renderRow={BulletinRow} data={data} />
       {/* {renderRow} */}
-      <Pagination />
+      <Pagination page={params.pg} total={count.total} />
     </div>
   );
-};
+}
 
-export default AnnouncementsListPage;
+export default BulletinsListPage;

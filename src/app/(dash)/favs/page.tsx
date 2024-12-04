@@ -1,6 +1,6 @@
 "use client";
 
-import Announcements from "@/components/Announcements";
+import Announcements from "@/components/Bulletins";
 import EventCalendar from "@/components/EventCalendar";
 import BigCalendar from "@/components/plugins/BigCalendar";
 import { calendarEvents } from "@/lib/data";

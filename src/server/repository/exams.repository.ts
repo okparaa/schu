@@ -37,7 +37,7 @@ export class ExamsRepository extends Repository {
                   this.db
                     .select({ id: lessons.id })
                     .from(lessons)
-                    .leftJoin(classes, eq(classes.id, lessons.classId))
+                    .innerJoin(classes, eq(classes.id, lessons.classId))
                     .leftJoin(students, eq(students.classId, classes.id))
                     .where(eq(students.id, params.std as string))
                 )

@@ -8,7 +8,7 @@ export * from "./lessons.table";
 export * from "./classes.table";
 export * from "./assignments.table";
 export * from "./events.table";
-export * from "./announcements.table";
+export * from "./bulletins.table";
 export * from "./attendance.table";
 export * from "./exams.table";
 export * from "./pins.table";

@@ -1,4 +1,4 @@
-import Announcements from "@/components/Announcements";
+import Announcements from "@/components/Bulletins";
 import FormModal from "@/components/FormModal";
 import Metrics from "@/components/Metrics";
 import BigCalendar from "@/components/plugins/BigCalendar";
@@ -32,7 +32,7 @@ async function SingleTeacherPage({ params }: ParamsProps) {
             <div className="w-2/3 flex flex-col justify-between gap-2">
               <div className="flex justify-between">
                 <h1 className="text-xl font-semibold">
-                  {teacher?.user?.surname} {teacher?.user?.firstname}
+                  {teacher?.user?.surname} {teacher?.user?.lastname}
                 </h1>
                 <FormModal table="teacher" type="update" data={teacher} />
               </div>

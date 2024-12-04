@@ -1,10 +1,10 @@
-import { count, eq, ilike, or, SQL } from "drizzle-orm";
+import { count, eq, ilike, inArray, or, sql, SQL } from "drizzle-orm";
 import { Repository } from ".";
 import { NotProvidedException } from "@/server/exceptions/notProvided.exception";
 import { ExpectationFailedException } from "@/server/exceptions/expectationFailed.exception";
 import { ClassList } from "@/types/ClassList";
 import { RequestQueryType } from "../schemas/query.schema";
-import { classes } from "../db/tables";
+import { classes, teachers, users } from "../db/tables";
 
 export class ClassesRepository extends Repository {
   async getClasses(limit: number, offset: number, params: RequestQueryType) {
@@ -18,6 +18,21 @@ export class ClassesRepository extends Repository {
           switch (key) {
             case "sach":
               query.push(ilike(classes.name, "%" + params.sach + "%"));
+              query.push(
+                inArray(
+                  classes.teacherId,
+                  this.db
+                    .select({ id: teachers.id })
+                    .from(teachers)
+                    .innerJoin(users, eq(users.id, teachers.userId))
+                    .where(
+                      ilike(
+                        sql`${users.surname} || ' ' || ${users.lastname}`,
+                        "%" + params.sach + "%"
+                      )
+                    )
+                )
+              );
               break;
             case "tid":
               query.push(eq(classes.teacherId, params.tid as string));

@@ -7,7 +7,7 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 import { createId } from "../create-id";
-import { announcements, events, grades, lessons, students, teachers } from ".";
+import { bulletins, events, grades, lessons, students, teachers } from ".";
 
 export const classes = pgTable("classes", {
   id: varchar("id", { length: 128 })
@@ -29,7 +29,7 @@ export const classes = pgTable("classes", {
 export type Classes = InferSelectModel<typeof classes>;
 
 export const classesRelation = relations(classes, ({ many, one }) => ({
-  announcements: many(announcements),
+  bulletins: many(bulletins),
   events: many(events),
   lessons: many(lessons),
   students: many(students),

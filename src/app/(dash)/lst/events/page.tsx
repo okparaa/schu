@@ -1,11 +1,20 @@
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
-import { eventsData, role } from "@/lib/data";
+import { role } from "@/lib/data";
 import { EventRow } from "./listRow";
 import FormModal from "@/components/FormModal";
+import { ParamsProps } from "@/types/ParamsProps";
+import { events } from "@/server/db/tables";
+import { RequestQuerySchema } from "@/server/schemas/query.schema";
+import { EventsService } from "@/server/services/events.service";
+import { EventsRepository } from "@/server/repository/events.repository";
 
-const EventsListPage = () => {
+const eventsService = new EventsService(new EventsRepository(events));
+async function EventsListPage({ searchParams }: ParamsProps) {
+  const params = RequestQuerySchema.parse(await searchParams);
+  const [data, count] = await eventsService.getEvents(params);
+
   const columns = [
     {
       header: "Title",
@@ -50,11 +59,11 @@ const EventsListPage = () => {
           </div>
         </div>
       </div>
-      <Table columns={columns} renderRow={EventRow} data={eventsData} />
+      <Table columns={columns} renderRow={EventRow} data={data} />
       {/* {renderRow} */}
-      <Pagination />
+      <Pagination page={params.pg} total={count.total} />
     </div>
   );
-};
+}
 
 export default EventsListPage;

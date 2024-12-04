@@ -1,4 +1,4 @@
-import { and, count, eq, ilike, inArray, or, SQL } from "drizzle-orm";
+import { count, eq, ilike, inArray, or, SQL } from "drizzle-orm";
 import { Repository } from ".";
 import { NotProvidedException } from "@/server/exceptions/notProvided.exception";
 import { ExpectationFailedException } from "@/server/exceptions/expectationFailed.exception";

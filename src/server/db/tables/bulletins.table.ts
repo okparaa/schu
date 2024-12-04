@@ -3,9 +3,9 @@ import { boolean, pgTable, timestamp, varchar } from "drizzle-orm/pg-core";
 import { createId } from "../create-id";
 import { classes } from "./classes.table";
 
-export const announcements = pgTable("announcements", {
+export const bulletins = pgTable("bulletins", {
   id: varchar("id", { length: 128 })
-    .$defaultFn(() => createId("announcements"))
+    .$defaultFn(() => createId("bulletins"))
     .primaryKey(),
   syn: boolean("syn").default(true),
   createdAt: timestamp("created_at").defaultNow(),
@@ -19,11 +19,11 @@ export const announcements = pgTable("announcements", {
   date: timestamp("date"),
 });
 
-export type Announcements = InferSelectModel<typeof announcements>;
+export type Bulletins = InferSelectModel<typeof bulletins>;
 
-export const announcementsRelations = relations(announcements, ({ one }) => ({
+export const bulletinsRelations = relations(bulletins, ({ one }) => ({
   class: one(classes, {
-    fields: [announcements.classId],
+    fields: [bulletins.classId],
     references: [classes.id],
   }),
 }));

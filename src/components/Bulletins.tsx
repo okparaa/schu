@@ -1,5 +1,5 @@
-const Announcements = () => {
-  const announcements = [
+const Bulletins = () => {
+  const bulletins = [
     {
       id: 1,
       title: "Lorem ipsum dolor sit amet.",
@@ -22,11 +22,11 @@ const Announcements = () => {
   return (
     <div className="bg-white p-2 rounded-md">
       <div className="flex justify-between items-center">
-        <h1 className="text-xl font-semibold">Announcements</h1>
+        <h1 className="text-xl font-semibold">Bulletins</h1>
         <span className="text-sm text-gray-400">View All</span>
       </div>
       <div className="flex flex-col gap-2 mt-2">
-        {announcements.map((item) => (
+        {bulletins.map((item) => (
           <div key={item.id} className="rounded-md text-gray-600 p-2 border">
             <div className="flex justify-between items-center">
               <h1 className="font-medium text-sm">{item.title}</h1>
@@ -42,4 +42,4 @@ const Announcements = () => {
   );
 };
 
-export default Announcements;
+export default Bulletins;
