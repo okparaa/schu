@@ -5,7 +5,7 @@ import {
   Subjects,
   Teachers,
   Users,
-} from "@/server/db/tables";
+} from "@/app/api/server/db/tables";
 
 export type AssignmentList = Assignments & {
   lesson: Lessons & {

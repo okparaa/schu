@@ -1,25 +1,30 @@
-import Pagination from "@/components/Pagination";
+"use client";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
 import { role } from "@/lib/data";
 import { StudentRow } from "./listRow";
 import FormModal from "@/components/FormModal";
-import { ParamsProps } from "@/types/ParamsProps";
-import { users } from "@/server/db/tables";
-import { RequestQuerySchema } from "@/server/schemas/query.schema";
-import { StudentsService } from "@/server/services/students.service";
-import { StudentsRepository } from "@/server/repository/students.repository";
+import useStudents from "@/app/api/lst/students/students.query";
+import Pagination from "@/components/Pagination";
+import { useSearchParams } from "next/navigation";
+import { RequestQuerySchema } from "@/app/api/server/schemas/query.schema";
+import Loading from "@/app/loading";
+import { StudentList } from "@/types/StudentList";
 
-const studentService = new StudentsService(new StudentsRepository(users));
-const StudentsListPage = async ({ searchParams }: ParamsProps) => {
-  const params = RequestQuerySchema.parse(await searchParams);
-  const [students, count] = await studentService.getStudents(params);
+function StudentsListPage() {
+  const params = RequestQuerySchema.parse(
+    Object.fromEntries(useSearchParams())
+  );
+
+  const { data, isLoading } = useStudents();
+
+  if (isLoading) return <Loading />;
 
   const columns = [
     {
       header: "Info",
       accessor: "info",
-      className: "pl-2",
+      className: "pl-2 lg:w-1/4",
     },
     {
       header: "Student Id",
@@ -29,7 +34,7 @@ const StudentsListPage = async ({ searchParams }: ParamsProps) => {
     {
       header: "Grade",
       accessor: "grade",
-      className: "hidden md:table-cell",
+      className: "hidden md:table-cell w-12",
     },
     {
       header: "Phone",
@@ -60,11 +65,14 @@ const StudentsListPage = async ({ searchParams }: ParamsProps) => {
           </div>
         </div>
       </div>
-      <Table columns={columns} renderRow={StudentRow} data={students} />
-      {/* {renderRow} */}
-      <Pagination page={params.pg} total={count.total} />
+      <Table
+        columns={columns}
+        renderRow={StudentRow}
+        data={data?.records as StudentList[]}
+      />
+      <Pagination page={params.pg} total={data?.total.count as number} />
     </div>
   );
-};
+}
 
 export default StudentsListPage;

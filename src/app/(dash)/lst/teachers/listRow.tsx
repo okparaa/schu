@@ -4,8 +4,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { TeacherList } from "@/types/TeacherList";
 export const TeacherRow = (row: TeacherList) => {
-  // console.log(row);
-
   return (
     <tr
       key={row.id}

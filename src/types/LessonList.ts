@@ -4,7 +4,7 @@ import {
   Subjects,
   Teachers,
   Users,
-} from "@/server/db/tables";
+} from "@/app/api/server/db/tables";
 
 export type LessonList = Lessons & {
   teacher: Teachers & { user: Users };

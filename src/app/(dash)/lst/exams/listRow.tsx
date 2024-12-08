@@ -1,5 +1,6 @@
 import FormModal from "@/components/FormModal";
 import { role } from "@/lib/data";
+import { dateFormat } from "@/lib/datefmts";
 import { ExamList } from "@/types/ExamList";
 
 export const ExamRow = (row: ExamList) => {
@@ -16,7 +17,7 @@ export const ExamRow = (row: ExamList) => {
         {row.lesson.teacher?.user?.surname} {row.lesson.teacher?.user?.lastname}
       </td>
       <td className="hidden md:table-cell">
-        {new Intl.DateTimeFormat("en-US").format(row.startTime as Date)}
+        {dateFormat(row.startTime?.toString())}
       </td>
       <td className="w-32">
         <div className="flex items-center justify-center gap-3">

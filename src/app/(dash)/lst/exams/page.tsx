@@ -1,19 +1,24 @@
+"use client";
+import useExams from "@/app/api/lst/exams/exams.query";
+import { RequestQuerySchema } from "@/app/api/server/schemas/query.schema";
+import FormModal from "@/components/FormModal";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
 import { role } from "@/lib/data";
+import { ExamList } from "@/types/ExamList";
+import { useSearchParams } from "next/navigation";
 import { ExamRow } from "./listRow";
-import FormModal from "@/components/FormModal";
-import { ParamsProps } from "@/types/ParamsProps";
-import { exams } from "@/server/db/tables";
-import { RequestQuerySchema } from "@/server/schemas/query.schema";
-import { ExamsService } from "@/server/services/exams.service";
-import { ExamsRepository } from "@/server/repository/exams.repository";
+import Loading from "@/app/loading";
 
-const examsService = new ExamsService(new ExamsRepository(exams));
-async function ExamsListPage({ searchParams }: ParamsProps) {
-  const params = RequestQuerySchema.parse(await searchParams);
-  const [data, count] = await examsService.getExams(params);
+function ExamsListPage() {
+  const params = RequestQuerySchema.parse(
+    Object.fromEntries(useSearchParams())
+  );
+  const { data, isLoading } = useExams();
+
+  if (isLoading) return <Loading />;
+
   const columns = [
     {
       header: "Subject",
@@ -53,9 +58,13 @@ async function ExamsListPage({ searchParams }: ParamsProps) {
           </div>
         </div>
       </div>
-      <Table columns={columns} renderRow={ExamRow} data={data} />
+      <Table
+        columns={columns}
+        renderRow={ExamRow}
+        data={data?.records as ExamList[]}
+      />
       {/* {renderRow} */}
-      <Pagination page={params.pg} total={count.total} />
+      <Pagination page={params.pg} total={data?.total.count as number} />
     </div>
   );
 }

@@ -113,6 +113,27 @@ export const menuItems = [
         ],
       },
       {
+        visible: ["*"],
+        href: "/",
+        label: "Auth",
+        icon: "icon-lock-1",
+        sub: true,
+        items: [
+          {
+            icon: "icon-gift-1",
+            label: "Roles",
+            href: "/lst/roles",
+            visible: ["*"],
+          },
+          {
+            icon: "icon-stopwatch",
+            label: "Perms",
+            href: "/lst/perms",
+            visible: ["*"],
+          },
+        ],
+      },
+      {
         icon: "icon-mail-1",
         label: "Messages",
         href: "/messages",

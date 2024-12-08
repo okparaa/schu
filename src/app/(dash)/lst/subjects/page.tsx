@@ -1,19 +1,22 @@
+"use client";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
 import { role } from "@/lib/data";
 import { SubjectRow } from "./listRow";
 import FormModal from "@/components/FormModal";
-import { ParamsProps } from "@/types/ParamsProps";
-import { RequestQuerySchema } from "@/server/schemas/query.schema";
-import { subjects } from "@/server/db/tables";
-import { SubjectsService } from "@/server/services/subjects.service";
-import { SubjectsRepository } from "@/server/repository/subjects.repository";
+import { RequestQuerySchema } from "@/app/api/server/schemas/query.schema";
+import { useSearchParams } from "next/navigation";
+import useSubjects from "@/app/api/lst/subjects/subjects.query";
+import Loading from "@/app/loading";
+import { SubjectList } from "@/types/SubjectList";
 
-const subjectService = new SubjectsService(new SubjectsRepository(subjects));
-async function SubjectListPage({ searchParams }: ParamsProps) {
-  const params = RequestQuerySchema.parse(await searchParams);
-  const [data, count] = await subjectService.getSubjects(params);
+function SubjectListPage() {
+  const params = RequestQuerySchema.parse(
+    Object.fromEntries(useSearchParams())
+  );
+  const { data, isLoading } = useSubjects();
+  if (isLoading) return <Loading />;
   const columns = [
     {
       header: "Subject Name",
@@ -44,9 +47,13 @@ async function SubjectListPage({ searchParams }: ParamsProps) {
           </div>
         </div>
       </div>
-      <Table columns={columns} renderRow={SubjectRow} data={data} />
+      <Table
+        columns={columns}
+        renderRow={SubjectRow}
+        data={data?.records as SubjectList[]}
+      />
       {/* {renderRow} */}
-      <Pagination page={params.pg} total={count.total} />
+      <Pagination page={params.pg} total={data?.total.count as number} />
     </div>
   );
 }

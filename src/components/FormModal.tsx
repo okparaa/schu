@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import dynamic from "next/dynamic";
-import Loading from "./Loading";
+import Loading from "@/app/loading";
 const TeacherForm = dynamic(() => import("./forms/TeacherForm"), {
   ...Loading,
 });
@@ -26,6 +26,7 @@ type FormModalProps = {
     | "subject"
     | "class"
     | "lesson"
+    | "role"
     | "exam"
     | "assignment"
     | "result"

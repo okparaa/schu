@@ -1,25 +1,29 @@
+"use client";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
 import { role } from "@/lib/data";
 import { TeacherRow } from "./listRow";
 import FormModal from "@/components/FormModal";
-import { users } from "@/server/db/tables";
-import { ParamsProps } from "@/types/ParamsProps";
-import { RequestQuerySchema } from "@/server/schemas/query.schema";
-import { TeachersRepository } from "@/server/repository/teachers.repository";
-import { TeachersService } from "@/server/services/teachers.service";
-const teacherService = new TeachersService(new TeachersRepository(users));
+import { RequestQuerySchema } from "@/app/api/server/schemas/query.schema";
+import { useSearchParams } from "next/navigation";
+import useTeachers from "@/app/api/lst/teachers/teachers.query";
+import Loading from "@/app/loading";
+import { TeacherList } from "@/types/TeacherList";
 
-async function TeachersPage({ searchParams }: ParamsProps) {
-  const params = RequestQuerySchema.parse(await searchParams);
-  const [data, count] = await teacherService.getTeachers(params);
+function TeachersPage() {
+  const params = RequestQuerySchema.parse(
+    Object.fromEntries(useSearchParams())
+  );
+  const { data, isLoading } = useTeachers();
+
+  if (isLoading) return <Loading />;
 
   const columns = [
     {
       header: "Info",
       accessor: "info",
-      className: "pl-2",
+      className: "pl-2 w-1/4",
     },
     {
       header: "Teacher ID",
@@ -32,9 +36,9 @@ async function TeachersPage({ searchParams }: ParamsProps) {
       className: "hidden md:table-cell",
     },
     {
-      header: "Classes",
+      header: "Class",
       accessor: "classes",
-      className: "hidden md:table-cell",
+      className: "hidden md:table-cell w-[43px]",
     },
     {
       header: "Phone",
@@ -49,7 +53,7 @@ async function TeachersPage({ searchParams }: ParamsProps) {
     {
       header: "Actions",
       accessor: "action",
-      className: "text-center lg:table-cell",
+      className: "text-center lg:table-cell w-1",
     },
   ];
   return (
@@ -65,9 +69,13 @@ async function TeachersPage({ searchParams }: ParamsProps) {
           </div>
         </div>
       </div>
-      <Table columns={columns} renderRow={TeacherRow} data={data} />
+      <Table
+        columns={columns}
+        renderRow={TeacherRow}
+        data={data?.records as TeacherList[]}
+      />
 
-      <Pagination page={params.pg} total={count.total} />
+      <Pagination page={params.pg} total={data?.total.count as number} />
     </div>
   );
 }

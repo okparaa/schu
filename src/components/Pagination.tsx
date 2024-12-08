@@ -16,8 +16,9 @@ const Pagination = ({ page, total }: PaginationProps) => {
     params.set("pg", newPage.toString());
     router.push(`${window.location.pathname}?${params}`);
   };
+
   return (
-    <div className="p-4 flex justify-between items-center text-gray-50">
+    <div className="p-4 flex justify-center items-center text-gray-50">
       <button
         disabled={!hasPrev}
         className={`icon-left-open i-btn ${hasPrev ? "" : "!bg-stone-100"}`}
@@ -30,7 +31,9 @@ const Pagination = ({ page, total }: PaginationProps) => {
             <button
               key={pageIdx}
               className={`c-btn ${
-                pageIdx === page ? "bg-white text-black" : ""
+                pageIdx === page
+                  ? "bg-white text-black border font-semibold border-purple-400"
+                  : "bg-purple-500 border font-semibold"
               }`}
               onClick={() => changePage(pageIdx)}
             >

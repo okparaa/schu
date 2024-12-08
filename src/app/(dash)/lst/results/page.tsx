@@ -1,35 +1,41 @@
+"use client";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
 import { role } from "@/lib/data";
 import { ResultRow } from "./listRow";
 import FormModal from "@/components/FormModal";
-import { ParamsProps } from "@/types/ParamsProps";
-import { results } from "@/server/db/tables";
-import { RequestQuerySchema } from "@/server/schemas/query.schema";
-import { ResultsRepository } from "@/server/repository/results.repository";
-import { ResultsService } from "@/server/services/results.service";
+import { RequestQuerySchema } from "@/app/api/server/schemas/query.schema";
+import { useSearchParams } from "next/navigation";
+import useResults from "@/app/api/lst/results/results.query";
+import { ResultProps } from "@/types/ResultList";
+import { exams } from "@/app/api/server/db/tables";
+import Loading from "@/app/loading";
 
-const resultsService = new ResultsService(new ResultsRepository(results));
-async function ResultListPage({ searchParams }: ParamsProps) {
-  const params = RequestQuerySchema.parse(await searchParams);
-  const [results, count] = await resultsService.getResults(params);
-  const data = results.map((result) => {
+function ResultListPage() {
+  const params = RequestQuerySchema.parse(
+    Object.fromEntries(useSearchParams())
+  );
+  const { data, isLoading } = useResults();
+  if (isLoading) return <Loading />;
+
+  const resultsData = data?.records.map((result) => {
     const assessment = result.assignment || result.exam;
     if (!assessment) return null;
     const isExam = "startTime" in assessment;
     return {
       id: result.id,
-      title: assessment.title,
+      title: assessment.lesson.subject.name,
       studentSurname: result.student.user.surname,
       studentFirstname: result.student.user.firstname,
       teacherSurname: assessment.lesson.teacher.user.surname,
       teacherFirstname: assessment.lesson.teacher.user.firstname,
       score: result.score,
       className: assessment.lesson.class.name,
-      startTime: isExam ? assessment.startTime : assessment.startDate,
+      startTime: isExam ? exams.startTime : assessment.startDate,
     };
   });
+
   const columns = [
     {
       header: "Subject",
@@ -79,9 +85,13 @@ async function ResultListPage({ searchParams }: ParamsProps) {
           </div>
         </div>
       </div>
-      <Table columns={columns} renderRow={ResultRow} data={data} />
+      <Table
+        columns={columns}
+        renderRow={ResultRow}
+        data={resultsData as ResultProps[]}
+      />
       {/* {renderRow} */}
-      <Pagination page={params.pg} total={count.total} />
+      <Pagination page={params.pg} total={data?.total.count as number} />
     </div>
   );
 }

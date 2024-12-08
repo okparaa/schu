@@ -1,13 +1,15 @@
 import {
   Classes,
   Lessons,
+  Roles,
   Subjects,
   Teachers,
   Users,
-} from "@/server/db/tables";
+  UsersRoles,
+} from "@/app/api/server/db/tables";
 
 export type TeacherList = Teachers & {
   lessons: (Lessons & { subject: Subjects })[];
-  user: Users;
+  user: Users & { userRoles: (UsersRoles & { role: Roles })[] };
   classes: Classes[];
 };

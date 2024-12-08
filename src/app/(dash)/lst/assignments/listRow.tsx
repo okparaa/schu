@@ -1,5 +1,6 @@
 import FormModal from "@/components/FormModal";
 import { role } from "@/lib/data";
+import { dateFormat } from "@/lib/datefmts";
 import { AssignmentList } from "@/types/AssignmentList";
 
 export const AssignmentRow = (row: AssignmentList) => {
@@ -14,7 +15,7 @@ export const AssignmentRow = (row: AssignmentList) => {
         {row.lesson.teacher.user.surname} {row.lesson.teacher.user.firstname}
       </td>
       <td className="hidden md:table-cell">
-        {new Intl.DateTimeFormat("en-US").format(row.dueDate as Date)}
+        {dateFormat(row.dueDate?.toString())}
       </td>
       <td className="w-32">
         <div className="flex items-center justify-center gap-3">

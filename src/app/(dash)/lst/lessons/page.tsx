@@ -1,19 +1,22 @@
+"use client";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
 import { role } from "@/lib/data";
 import { LessonRow } from "./listRow";
 import FormModal from "@/components/FormModal";
-import { lessons } from "@/server/db/tables";
-import { ParamsProps } from "@/types/ParamsProps";
-import { RequestQuerySchema } from "@/server/schemas/query.schema";
-import { LessonsService } from "@/server/services/lessons.service";
-import { LessonsRepository } from "@/server/repository/lessons.repository";
+import { RequestQuerySchema } from "@/app/api/server/schemas/query.schema";
+import { useSearchParams } from "next/navigation";
+import useLessons from "@/app/api/lst/lessons/lessons.query";
+import Loading from "@/app/loading";
+import { LessonList } from "@/types/LessonList";
 
-const lessonsService = new LessonsService(new LessonsRepository(lessons));
-async function LessonListPage({ searchParams }: ParamsProps) {
-  const params = RequestQuerySchema.parse(await searchParams);
-  const [data, count] = await lessonsService.getLessons(params);
+function LessonListPage() {
+  const params = RequestQuerySchema.parse(
+    Object.fromEntries(useSearchParams())
+  );
+  const { data, isLoading } = useLessons();
+  if (isLoading) return <Loading />;
   const columns = [
     {
       header: "Subject",
@@ -48,9 +51,13 @@ async function LessonListPage({ searchParams }: ParamsProps) {
           </div>
         </div>
       </div>
-      <Table columns={columns} renderRow={LessonRow} data={data} />
+      <Table
+        columns={columns}
+        renderRow={LessonRow}
+        data={data?.records as LessonList[]}
+      />
       {/* {renderRow} */}
-      <Pagination page={params.pg} total={count.total} />
+      <Pagination page={params.pg} total={data?.total.count as number} />
     </div>
   );
 }

@@ -1,29 +1,33 @@
+"use client";
+import useEvents from "@/app/api/lst/events/events.query";
+import { RequestQuerySchema } from "@/app/api/server/schemas/query.schema";
+import Loading from "@/app/loading";
+import FormModal from "@/components/FormModal";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
 import { role } from "@/lib/data";
+import { EventList } from "@/types/EventList";
+import { useSearchParams } from "next/navigation";
 import { EventRow } from "./listRow";
-import FormModal from "@/components/FormModal";
-import { ParamsProps } from "@/types/ParamsProps";
-import { events } from "@/server/db/tables";
-import { RequestQuerySchema } from "@/server/schemas/query.schema";
-import { EventsService } from "@/server/services/events.service";
-import { EventsRepository } from "@/server/repository/events.repository";
 
-const eventsService = new EventsService(new EventsRepository(events));
-async function EventsListPage({ searchParams }: ParamsProps) {
-  const params = RequestQuerySchema.parse(await searchParams);
-  const [data, count] = await eventsService.getEvents(params);
+function EventsListPage() {
+  const params = RequestQuerySchema.parse(
+    Object.fromEntries(useSearchParams())
+  );
+  const { data, isLoading } = useEvents();
 
+  if (isLoading) return <Loading />;
   const columns = [
     {
       header: "Title",
       accessor: "title",
-      className: "pl-4",
+      className: "pl-4 md:w-2/6 w-3/6",
     },
     {
       header: "Class",
       accessor: "class",
+      className: "w-12",
     },
     {
       header: "Date",
@@ -59,9 +63,13 @@ async function EventsListPage({ searchParams }: ParamsProps) {
           </div>
         </div>
       </div>
-      <Table columns={columns} renderRow={EventRow} data={data} />
+      <Table
+        columns={columns}
+        renderRow={EventRow}
+        data={data?.records as EventList[]}
+      />
       {/* {renderRow} */}
-      <Pagination page={params.pg} total={count.total} />
+      <Pagination page={params.pg} total={data?.total.count as number} />
     </div>
   );
 }

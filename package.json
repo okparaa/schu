@@ -10,23 +10,26 @@
     "test": "jest",
     "test:watch": "jest --watchAll",
     "gen": "drizzle-kit generate",
-    "mig": "node src/server/db/migrate.ts",
-    "seed": "tsx src/server/db/seed.ts",
+    "mig": "node src/app/api/server/db/migrate.ts",
+    "seed": "tsx src/app/api/server/db/seed.ts",
     "db": "npx drizzle-kit studio"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",
+    "axios": "^1.7.9",
     "bcryptjs": "^2.4.3",
     "dayjs": "^1.11.13",
     "dotenv": "^16.4.5",
     "drizzle-orm": "^0.36.3",
     "jsonwebtoken": "^9.0.2",
     "next": "^15.0.3",
+    "nextjs-toploader": "^3.7.15",
     "pg": "^8.13.1",
     "react": "^19.0.0-rc-b01722d5-20241114",
     "react-dom": "^19.0.0-rc-b01722d5-20241114",
     "react-hook-form": "^7.53.1",
     "react-toastify": "^10.0.6",
+    "swr": "^2.2.5",
     "zod": "^3.23.8"
   },
   "devDependencies": {

@@ -1,16 +1,7 @@
 import FormModal from "@/components/FormModal";
 import { role } from "@/lib/data";
-type ResultProps = {
-  id: string;
-  title: string;
-  studentSurname: string;
-  studentFirstname: string;
-  teacherSurname: string;
-  teacherFirstname: string;
-  score: string;
-  className: string;
-  startTime: Date;
-};
+import { dateFormat } from "@/lib/datefmts";
+import { ResultProps } from "@/types/ResultList";
 
 export const ResultRow = (row: ResultProps) => {
   return (
@@ -29,7 +20,7 @@ export const ResultRow = (row: ResultProps) => {
       </td>
       <td className="hidden md:table-cell">{row.className}</td>
       <td className="hidden md:table-cell">
-        {new Intl.DateTimeFormat("en-US").format(row.startTime)}
+        {dateFormat(row.startTime?.toString())}
       </td>
       <td className="w-32">
         <div className="flex items-center justify-center gap-3">

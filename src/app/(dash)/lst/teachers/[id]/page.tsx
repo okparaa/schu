@@ -3,9 +3,9 @@ import FormModal from "@/components/FormModal";
 import Metrics from "@/components/Metrics";
 import BigCalendar from "@/components/plugins/BigCalendar";
 import { calendarEvents } from "@/lib/data";
-import { teachers } from "@/server/db/tables";
-import { TeachersRepository } from "@/server/repository/teachers.repository";
-import { TeachersService } from "@/server/services/teachers.service";
+import { teachers } from "@/app/api/server/db/tables";
+import { TeachersRepository } from "@/app/api/server/repository/teachers.repository";
+import { TeachersService } from "@/app/api/server/services/teachers.service";
 import { ParamsProps } from "@/types/ParamsProps";
 import Image from "next/image";
 import Link from "next/link";
@@ -97,36 +97,36 @@ async function SingleTeacherPage({ params }: ParamsProps) {
       <div className="w-full xl:w-1/3 flex gap-2 flex-col">
         <div className="p-4 rounded-md bg-white">
           <h1 className="text-lg font-semibold">Shortcuts</h1>
-          <div className="mt-4 flex gap-4 flex-wrap text-xs to-gray-500 justify-center">
+          <div className="mt-4 flex gap-4 flex-wrap text-xs to-gray-500 justify-start">
             <Link
               className="p-2 rounded-md bg-pink-300"
               href={`/lst/classes?tid=${id}`}
             >
-              Teacher&apos;s Classes
+              Classes
             </Link>
             <Link
               className="p-2 rounded-md bg-purple-300"
               href={`/lst/students?tid=${id}`}
             >
-              Teacher&apos;s Students
+              Students
             </Link>
             <Link
               className="p-2 rounded-md bg-green-300"
               href={`/lst/exams?tid=${id}`}
             >
-              Teacher&apos;s Exams
+              Exams
             </Link>
             <Link
               className="p-2 rounded-md bg-slate-300"
               href={`/lst/lessons?tid=${id}`}
             >
-              Teacher&apos;s Lessons
+              Lessons
             </Link>
             <Link
               className="p-2 rounded-md bg-stone-300"
               href={`/lst/assignments?tid=${id}`}
             >
-              Teacher&apos;s Assignments
+              Assignments
             </Link>
           </div>
         </div>

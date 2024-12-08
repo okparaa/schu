@@ -1,21 +1,22 @@
+"use client";
+import useAssignments from "@/app/api/lst/assignments/assignments.query";
+import { RequestQuerySchema } from "@/app/api/server/schemas/query.schema";
+import Loading from "@/app/loading";
+import FormModal from "@/components/FormModal";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
 import { role } from "@/lib/data";
+import { AssignmentList } from "@/types/AssignmentList";
+import { useSearchParams } from "next/navigation";
 import { AssignmentRow } from "./listRow";
-import FormModal from "@/components/FormModal";
-import { ParamsProps } from "@/types/ParamsProps";
-import { assignments } from "@/server/db/tables";
-import { RequestQuerySchema } from "@/server/schemas/query.schema";
-import { AssignmentsService } from "@/server/services/assignments.service";
-import { AssignmentsRepository } from "@/server/repository/assignments.repository";
 
-const assignmentsService = new AssignmentsService(
-  new AssignmentsRepository(assignments)
-);
-async function AssignmentsListPage({ searchParams }: ParamsProps) {
-  const params = RequestQuerySchema.parse(await searchParams);
-  const [data, count] = await assignmentsService.getAssignments(params);
+function AssignmentsListPage() {
+  const params = RequestQuerySchema.parse(
+    Object.fromEntries(useSearchParams())
+  );
+  const { data, isLoading } = useAssignments();
+  if (isLoading) return <Loading />;
   const columns = [
     {
       header: "Subject",
@@ -57,9 +58,13 @@ async function AssignmentsListPage({ searchParams }: ParamsProps) {
           </div>
         </div>
       </div>
-      <Table columns={columns} renderRow={AssignmentRow} data={data} />
+      <Table
+        columns={columns}
+        renderRow={AssignmentRow}
+        data={data?.records as AssignmentList[]}
+      />
       {/* {renderRow} */}
-      <Pagination page={params.pg} total={count.total} />
+      <Pagination page={params.pg} total={data?.total.count as number} />
     </div>
   );
 }

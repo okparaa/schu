@@ -24,11 +24,13 @@ export const StudentRow = (row: StudentList) => {
               {row.user.surname} {row.user.lastname}
             </h1>
           </Link>
-          <p className="text-xs text-gray-500">{row.class.name}</p>
+          <p className="text-xs font-semibold text-gray-500">
+            {row.class.name}
+          </p>
         </div>
       </td>
       <td className="hidden md:table-cell">{row.id}</td>
-      <td className="hidden md:table-cell">{row.grade?.level}</td>
+      <td className="hidden md:table-cell w-5">{row.grade?.level}</td>
       <td className="hidden lg:table-cell">{row.user.phone}</td>
       <td className="hidden lg:table-cell">{row.user.address}</td>
       <td className="w-32">

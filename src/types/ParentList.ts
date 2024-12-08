@@ -1,3 +1,12 @@
-import { Parents, Students, Users } from "@/server/db/tables";
+import {
+  Parents,
+  Roles,
+  Students,
+  Users,
+  UsersRoles,
+} from "@/app/api/server/db/tables";
 
-export type ParentList = Parents & { user: Users; students: Students[] };
+export type ParentList = Parents & {
+  user: Users & { userRoles: (UsersRoles & { role: Roles })[] };
+  students: Students[];
+};

@@ -24,7 +24,7 @@ export const ParentsRow = (row: ParentList) => {
           <p className="text-xs text-gray-500">{row.user.email}</p>
         </div>
       </td>
-      <td className="hidden md:table-cell">
+      <td className="hidden md:table-cell align-middle text-center">
         {row.students
           .reduce((str, student) => str + student.userId + ", ", "")
           .replace(/,+\W+$/, "")}

@@ -1,32 +1,32 @@
+"use client";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
 import { role } from "@/lib/data";
 import { ParentsRow } from "./listRow";
 import FormModal from "@/components/FormModal";
-import { ParamsProps } from "@/types/ParamsProps";
-import { RequestQuerySchema } from "@/server/schemas/query.schema";
-import { ParentsService } from "@/server/services/parents.service";
-import { ParentsRepository } from "@/server/repository/parents.repository";
-import { parents } from "@/server/db/tables";
+import { RequestQuerySchema } from "@/app/api/server/schemas/query.schema";
+import { useSearchParams } from "next/navigation";
+import useParents from "@/app/api/lst/parents/parents.query";
+import Loading from "@/app/loading";
+import { ParentList } from "@/types/ParentList";
 
-const parentService = new ParentsService(new ParentsRepository(parents));
-async function ParentsListPage({ searchParams }: ParamsProps) {
-  // await seed();
-
-  const params = RequestQuerySchema.parse(await searchParams);
-  const [data, count] = await parentService.getParents(params);
-
+function ParentsListPage() {
+  const params = RequestQuerySchema.parse(
+    Object.fromEntries(useSearchParams())
+  );
+  const { data, isLoading } = useParents();
+  if (isLoading) return <Loading />;
   const columns = [
     {
       header: "Info",
       accessor: "info",
-      className: "pl-4",
+      className: "pl-4 md:w-1/3",
     },
     {
-      header: "Student names",
+      header: "Student",
       accessor: "students",
-      className: "hidden md:table-cell",
+      className: "hidden md:table-cell align-middle text-center",
     },
     {
       header: "Phone",
@@ -57,9 +57,13 @@ async function ParentsListPage({ searchParams }: ParamsProps) {
           </div>
         </div>
       </div>
-      <Table columns={columns} renderRow={ParentsRow} data={data} />
+      <Table
+        columns={columns}
+        renderRow={ParentsRow}
+        data={data?.records as ParentList[]}
+      />
       {/* {renderRow} */}
-      <Pagination page={params.pg} total={count.total} />
+      <Pagination page={params.pg} total={data?.total.count as number} />
     </div>
   );
 }

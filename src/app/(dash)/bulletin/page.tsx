@@ -5,10 +5,10 @@ import { role } from "@/lib/data";
 import { BulletinRow } from "./listRow";
 import FormModal from "@/components/FormModal";
 import { ParamsProps } from "@/types/ParamsProps";
-import { bulletins } from "@/server/db/tables";
-import { RequestQuerySchema } from "@/server/schemas/query.schema";
-import { BulletinsRepository } from "@/server/repository/bulletins.repository";
-import { BulletinsService } from "@/server/services/bulletins.service";
+import { bulletins } from "@/app/api/server/db/tables";
+import { RequestQuerySchema } from "@/app/api/server/schemas/query.schema";
+import { BulletinsRepository } from "@/app/api/server/repository/bulletins.repository";
+import { BulletinsService } from "@/app/api/server/services/bulletins.service";
 
 const bulletinsService = new BulletinsService(
   new BulletinsRepository(bulletins)

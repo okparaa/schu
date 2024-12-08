@@ -1,19 +1,22 @@
+"use client";
+import useClasses from "@/app/api/lst/events copy/classes.query";
+import { RequestQuerySchema } from "@/app/api/server/schemas/query.schema";
+import Loading from "@/app/loading";
+import FormModal from "@/components/FormModal";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
 import { role } from "@/lib/data";
+import { ClassList } from "@/types/ClassList";
+import { useSearchParams } from "next/navigation";
 import { ClassesRow } from "./listRow";
-import FormModal from "@/components/FormModal";
-import { ParamsProps } from "@/types/ParamsProps";
-import { classes } from "@/server/db/tables";
-import { RequestQuerySchema } from "@/server/schemas/query.schema";
-import { ClassesRepository } from "@/server/repository/classes.repository";
-import { ClassesService } from "@/server/services/classes.service";
 
-const classesService = new ClassesService(new ClassesRepository(classes));
-async function ClassListPage({ searchParams }: ParamsProps) {
-  const params = RequestQuerySchema.parse(await searchParams);
-  const [data, count] = await classesService.getClasses(params);
+function ClassListPage() {
+  const params = RequestQuerySchema.parse(
+    Object.fromEntries(useSearchParams())
+  );
+  const { data, isLoading } = useClasses();
+  if (isLoading) return <Loading />;
   const columns = [
     {
       header: "Class",
@@ -21,8 +24,8 @@ async function ClassListPage({ searchParams }: ParamsProps) {
       className: "pl-4",
     },
     {
-      header: "Cap",
-      accessor: "capacity",
+      header: "Capacity",
+      accessor: "cap",
     },
     {
       header: "Grade",
@@ -53,9 +56,13 @@ async function ClassListPage({ searchParams }: ParamsProps) {
           </div>
         </div>
       </div>
-      <Table columns={columns} renderRow={ClassesRow} data={data} />
+      <Table
+        columns={columns}
+        renderRow={ClassesRow}
+        data={data?.records as ClassList[]}
+      />
       {/* {renderRow} */}
-      <Pagination page={params.pg} total={count.total} />
+      <Pagination page={params.pg} total={data?.total.count as number} />
     </div>
   );
 }
